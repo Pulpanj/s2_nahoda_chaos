@@ -1,0 +1,10 @@
+---
+title: Zajímavé odkazy 
+toc: false
+
+---
+
+### Odkazy nasbírané cestou
+
+- Simulace a modelování komplexních systémů
+  - [NetLogo](https://www.netlogo.org/){target="_blank"} a [NetLogo Web](https://www.netlogoweb.org/){target="_blank"} jsou platformy pro modelování a simulaci komplexních systémů, které umožňují vytvářet agent-based modely a vizualizovat jejich chování v čase. NetLogo je široce používaný nástroj pro výuku a výzkum v oblasti komplexních systémů, sociálních věd, ekologie a dalších oborů. NetLogo Web umožňuje spouštět NetLogo modely přímo v prohlížeči bez nutnosti instalace softwaru.  

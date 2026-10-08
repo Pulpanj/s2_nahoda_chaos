@@ -1,0 +1,10 @@
+/.quarto/
+**/*.quarto_ipynb
+_site/
+_freeze/
+_extensions/
+_cache/
+**/.cache
+_site_pulpanj_blog_s2/
+/.luarc.json
+.CondaPkg/

@@ -1,0 +1,16 @@
+JULIA_PROJECT=D:/ajps/quarto/u3v/s1_nahoda_chaos
+JULIA_CONDAPKG_BACKEND = Null
+JULIA_PYTHONCALL_EXE = d:\\ajps\\quarto\\.venv\\Scripts\\python.exe
+# QUARTO_CACHE_DIR=_cache
+# <!-- ENV["JULIA_CONDAPKG_BACKEND"] = "Null"
+# ENV["JULIA_PYTHONCALL_EXE"] = "/path/to/python"  # optional
+# ENV["JULIA_PYTHONCALL_EXE"] = "@PyCall"  # optional
+# ENV["JULIA_PYTHONCALL_EXE"] = "@venv" # optional
+# 
+# By setting the CondaPkg backend to Null, it will never install any Conda packages. In this case, PythonCall will use whichever Python is currently installed and in your PATH. You must have already installed any Python packages that you need.
+# 
+# If python is not in your PATH, you will also need to set JULIA_PYTHONCALL_EXE to its path. Relative paths are resolved relative to the current active project.
+# 
+# If you also use PyCall, you can set JULIA_PYTHONCALL_EXE=@PyCall to use the same Python interpreter. See here.
+# 
+# If you have a Python virtual environment at .venv in your current active project, you can set JULIA_PYTHONCALL_EXE=@venv to use it. -->

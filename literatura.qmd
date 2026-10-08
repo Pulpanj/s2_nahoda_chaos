@@ -1,0 +1,75 @@
+---
+title: Seznam dostupné literatury 
+toc: false
+# execute:
+#   freeze: false  # re-render only when source changes
+#   cache: false
+
+format:
+  typst:
+      output-file: "literatura"
+      output-ext: "pdf"
+      engine: typst    
+      keep-typ: false
+      papersize: a4
+      margin:
+          x: 1.5cm
+          y: 1.5cm
+      toc: false
+      fontsize: 9pt
+      include-in-header:
+          - text: |
+              #set table(stroke: 0.5pt + black)  
+
+  html:
+    table:
+      striped: false
+      hover: false
+      responsive: false
+      theme:
+          light: brand
+          dark: slate 
+
+
+format-links:
+  - ipynb
+  - format: typst
+    text: PDF
+    icon: file-pdf
+---
+
+```{julia}
+#| echo: false
+#| output: asis  #asis
+#| cache: false
+#| freeze: false
+using OrderedCollections
+include("generate_book_list.jl")
+book_list = [
+    OrderedDict(
+        "label" => "Přednáška 1 (Počet pravděpodobnosti )",
+    ),
+    OrderedDict(
+        "Název" => "Grinstead and Snell’s Introduction to Probability",
+        "Autor" => "Charles M. Grinstead, J. Laurie Snell.",
+        "PDF" => "https://math.dartmouth.edu/~prob/prob/prob.pdf",
+        "URL" => "https://stats.libretexts.org/Bookshelves/Probability_Theory/Introductory_Probability_(Grinstead_and_Snell)",
+        # "Poznámka" => "LibreTexts je online version, která obsahuje i další materiály, včetně cvičení a řešení.",
+        "cover" => "/images/stats_full.png"
+    ),
+
+    # OrderedDict(
+    #     "Název" => "",
+    #     "Autor" => "",
+    #     "Reference" => " ",
+    #     "PDF" => "",
+    #     "URL" => "",
+    #     "Rok" => "",
+    #     "cover" => "/images/.jpg"
+    # ),
+
+]
+generate_book_list(book_list)
+```
+
+

@@ -1,0 +1,96 @@
+
+
+.quarto-listing-table td:nth-child(1) {
+    width: 200px;
+}
+
+/* e.g., Title column */
+.quarto-listing-table td:nth-child(2) {
+    width: 200px;
+}
+
+
+/* e.g., description column */
+.quarto-listing-table td:nth-child(3) {
+    width: 300px;
+}
+
+/* e.g., inserted column */
+.quarto-listing-table td:nth-child(4) {
+    width: 200px;
+}
+
+/* e.g., pdf column */
+.quarto-listing-table td:nth-child(5) {
+    width: 200px;
+}
+
+/* e.g., ipyntb column */
+.quarto-listing-table td:nth-child(6) {
+    width: 200px;
+}
+
+
+.listing-title a {
+    font-weight: bold;
+    font-size: 1.1em;
+    text-decoration: none;
+}
+
+/* Light blue, change to your preferred color */
+.quarto-listing-table table table-striped table-hover {
+    background-color: #1a5e9e;
+}
+
+/* 
+.literature_table tr:nth-child(even),
+.literature_table tr:nth-child(odd) {
+    /* background-color: rgb(220, 153, 153) !important;
+    border: 1px solid red !important; */
+} */
+
+
+/* <header id="title-block-header" class="quarto-title-block"><h1 class="title display-7">Post With Code</h1></header> */
+/* #title-block-header {
+    margin-bottom: 0em;
+    margin-block-end: 0em;  
+    margin-block-start: 0em;
+} */
+/* margin-block-end: 0.67em; */
+
+/* #quarto-content .subtitle {
+    padding-top: 2px;
+}
+
+.display-7 {
+    font-size: 2rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 0em;
+    margin-block-end: 0em;  
+    margin-block-start: 0em;
+  }
+  
+.lead {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 0em;
+    margin-block-end: 0em;  
+    margin-block-start: -1em;
+  } */
+
+/* main {
+    margin-top: 0em;
+    margin-bottom: 0em;
+} */
+
+.cell-output {
+    background-color: rgb(255, 255, 255);
+    border-radius: 3pt;
+    /* border-color: #f0f2f1ff; */
+    border-width: 0.1px;
+    /* align-items: center; */
+    border: solid rgb(222, 230, 226);
+    inset-block: 30px;
+}

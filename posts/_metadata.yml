@@ -1,0 +1,249 @@
+
+
+# engine: julia
+
+# metadata-files:
+#   - _environment.yml
+
+# freeze computational output
+# (see https://quarto.org/docs/projects/code-execution.html#freeze)
+# freeze: true
+
+author: 
+  name: "Jarda Půlpán"
+  email: "pulpanj@volny.cz"
+
+
+# Enable banner style title blocks
+title-block-banner: true
+
+format:
+  typst:
+      keep-typ: false
+      papersize: a4
+      margin:
+        x: 1.8cm
+        y: 1.8cm
+      toc: true
+      lof: true
+      lot: true
+      number-sections: true
+      toc-depth: 2       # Optional: controls heading levels shown
+      number-depth: 2
+      cap-location: top
+      fig-cap-location: top
+      include-in-header:
+          - text: |
+              #set table(stroke: 0.5pt + black) 
+              #set math.equation(numbering: "1")
+              /* Color links */
+              #show link: set text(fill: rgb(0, 0, 255))          
+              #show raw: set text(font: "Cascadia Code")
+              #show raw.where(block: true): set block(
+              fill: rgb("#f9f9f9ff"),
+              inset: 10pt,
+              radius: 4pt,
+              stroke: 0.3pt +  rgb("#c2c2c1ff"),
+              )
+              #set raw(theme: "/resources/jp.tmTheme")
+              #show raw.where(block: true): code => {
+              show raw.line: line => {
+                  if line.number < 10 {
+                  text(fill: olive,style:"italic",weight:"light")[~#line.number]
+                  } else {
+                  text(fill: olive,style:"italic",weight:"light")[#line.number]
+                  }
+                  h(1em)
+                  line.body
+              }
+              code
+              }
+
+      code-annotations: below
+
+  html:
+    # theme:
+      # - lux,cosmo
+      # - brand
+      # light: brand
+      # dark: slate
+    toc: true
+    toc-location: "left" # Options: left, right, body
+    toc-title: "**Obsah:**"
+    toc-depth: 4       # Optional: controls heading levels shown
+    number-sections: false
+    number-depth: 3
+    toc-expand: 2
+    smooth-scroll: true
+    anchor-sections: true
+    code-block-border-left: "#0b4edeff" 
+    code-block-bg: "#fafaf1ff"
+    # highlight-style: tango
+    highlight-style: ../../resources/jptango.theme
+    code-line-numbers: true
+    code-overflow: wrap
+    code-annotations: hover
+    code-fold: true
+    cap-location: top
+    fig-cap-location: top
+    title: "All Posts"
+    # listing:
+    #   contents: /posts
+    #   type: default
+
+css: /resources/styles.css        
+
+format-links:
+  - ipynb
+  - format: typst
+    text: PDF
+    icon: file-pdf
+
+
+# Crossref
+# custom	
+# A custom cross reference type. See Custom for more details.
+
+# chapters	
+# Use top level sections (H1) in this document as chapters.
+
+# title-delim	
+# The delimiter used between the prefix and the caption.
+
+# fig-title	
+# The title prefix used for figure captions.
+
+# tbl-title	
+# The title prefix used for table captions.
+
+# eq-title	
+# The title prefix used for equation captions.
+
+# lst-title	
+# The title prefix used for listing captions.
+
+# thm-title	
+# The title prefix used for theorem captions.
+
+# lem-title	
+# The title prefix used for lemma captions.
+
+# cor-title	
+# The title prefix used for corollary captions.
+
+# prp-title	
+# The title prefix used for proposition captions.
+
+# cnj-title	
+# The title prefix used for conjecture captions.
+
+# def-title	
+# The title prefix used for definition captions.
+
+# exm-title	
+# The title prefix used for example captions.
+
+# exr-title	
+# The title prefix used for exercise captions.
+
+# fig-prefix	
+# The prefix used for an inline reference to a figure.
+
+# tbl-prefix	
+# The prefix used for an inline reference to a table.
+
+# eq-prefix	
+# The prefix used for an inline reference to an equation.
+
+# sec-prefix	
+# The prefix used for an inline reference to a section.
+
+# lst-prefix	
+# The prefix used for an inline reference to a listing.
+
+# thm-prefix	
+# The prefix used for an inline reference to a theorem.
+
+# lem-prefix	
+# The prefix used for an inline reference to a lemma.
+
+# cor-prefix	
+# The prefix used for an inline reference to a corollary.
+
+# prp-prefix	
+# The prefix used for an inline reference to a proposition.
+
+# cnj-prefix	
+# The prefix used for an inline reference to a conjecture.
+
+# def-prefix	
+# The prefix used for an inline reference to a definition.
+
+# exm-prefix	
+# The prefix used for an inline reference to an example.
+
+# exr-prefix	
+# The prefix used for an inline reference to an exercise.
+
+# fig-labels	
+# The numbering scheme used for figures.
+
+# tbl-labels	
+# The numbering scheme used for tables.
+
+# eq-labels	
+# The numbering scheme used for equations.
+
+# sec-labels	
+# The numbering scheme used for sections.
+
+# lst-labels	
+# The numbering scheme used for listings.
+
+# thm-labels	
+# The numbering scheme used for theorems.
+
+# lem-labels	
+# The numbering scheme used for lemmas.
+
+# cor-labels	
+# The numbering scheme used for corollaries.
+
+# prp-labels	
+# The numbering scheme used for propositions.
+
+# cnj-labels	
+# The numbering scheme used for conjectures.
+
+# def-labels	
+# The numbering scheme used for definitions.
+
+# exm-labels	
+# The numbering scheme used for examples.
+
+# exr-labels	
+# The numbering scheme used for exercises.
+
+# lof-title	
+# The title used for the list of figures.
+
+# lot-title	
+# The title used for the list of tables.
+
+# lol-title	
+# The title used for the list of listings.
+
+# labels	
+# The number scheme used for references.
+
+# subref-labels	
+# The number scheme used for sub references.
+
+# ref-hyperlink	
+# Whether cross references should be hyper-linked.
+
+# appendix-title	
+# The title used for appendix.
+
+# appendix-delim	
+# The delimiter beween appendix number and title.

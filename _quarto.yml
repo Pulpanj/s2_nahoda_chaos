@@ -1,0 +1,141 @@
+project:
+  type: website
+  output-dir: "_site_pulpanj_blog_s2"
+
+engine: julia
+
+# julia:
+#   key: value
+
+# The currently available options are:
+# exeflags: An array of strings which are appended to the julia command that starts the worker process. 
+# For example, a notebook is run with --project=@. by default 
+# (the environment in the directory where the notebook is stored) 
+# but this could be overridden by setting exeflags: ["--project=/some/directory/"].
+# env: An array of strings where each string specifies one environment 
+# variable that is passed to the worker process. For example, env: ["SOMEVAR=SOMEVALUE"].
+# restart
+# quarto call engine julia kill
+
+execute:
+  freeze: auto  # re-render only when source changes
+  cache: true
+
+filters:
+  - pandoc-ext/list-table
+  - include-code-files
+
+lang: cs
+date-format: iso
+
+website:
+  description: "Blog psaný na základě přednášek university 3 věku na MFF UK: Náhoda, nelinearita, chaos, komplexita. Moderní příspěvky fyziky k porozumění světu kolem nás."
+  site-url: http://www.pulpanj.me.cz/blogs/u3v/s2_nahoda_chaos/ # you must change this appropriately for RSS feeds to work properly
+  title: "U3V_2> Náhoda, nelinearita, chaos, komplexita"
+  open-graph: true
+
+  page-navigation: true
+  back-to-top-navigation: true
+  search:
+    location: navbar
+    type: textbox
+
+  navbar:
+    right:
+      - text: Kurz
+        menu:
+          - literatura.qmd
+          - odkazy.qmd
+          - todo.qmd
+      - text: Manuály
+        menu:
+          - text: Quarto ve VSC
+            href: https://quarto.org/docs/get-started/hello/vscode.html
+          - text: Julia language
+            href: https://julialang.org/
+      - icon: file-earmark-person
+        href: ./aboutme.qmd
+        text: " "
+      - icon: github
+        href: https://github.com/Pulpanj/s2_nahoda_chaos
+      - icon: envelope
+        href: "mailto:pulpanj@volny.cz"
+        aria-label: "Email"
+
+
+  page-footer:
+    border: true
+  # Theme default
+    # background: rgb(81, 118, 153)
+    background: rgb(0, 0, 0)
+    foreground: rgb(221, 228, 235)
+    # center:
+    #   - text: "About"
+    #     href: about.qmd
+    left:
+      - text: © 2026 <a href=/aboutme.qmd> Jarda Půlpán  </a>
+      # - link: "pulpanj@volny.cz"
+    center:
+      - Kódy v jazyce <a href=https://julialang.org/>Julia</a>, generováno pomoci <a href=https://quarto.org/>Quarto</a>
+    right:
+      - text: "Licence: <a href=https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1>CC BY 4.0</a>"
+
+  # comments:
+  #   hypothesis:
+  #     theme: classic
+  #     openSidebar: false
+  #     showHighlights: whenSidebarOpen
+  #     enableExperimentalNewNoteButton: true
+  #     branding:
+  #         appBackgroundColor: white
+  #         # theme: default
+  #         ctaBackgroundColor: rgb(81, 118, 153)
+  #         ctaTextColor: rgb(221, 228, 235)
+  #         selectionFontFamily: 'helvetica, arial, sans serif'
+
+  announcement: 
+    icon: info-circle
+    dismissable: true
+    content: "**INFO** Tato stránka je průběžně aktualizována, obsahuje asi dost překlepů a chyb, klidně mi je hlašte."
+    type: primary
+    position: below-navbar  
+  # reader-mode: true            
+
+brand:
+  color:
+    palette:
+      dark-grey: "#222222"
+      blue: "#ddeaf1"
+    background: blue
+    foreground: dark-grey
+    primary: black
+
+format:
+  html:
+    toc: true
+    number-sections: false
+    toc-depth: 4       # Optional: controls heading levels shown
+    toc-expand: false
+    smooth-scroll: true
+    theme:
+        # - lux,cosmo
+        # - brand
+        light: brand
+        dark: slate
+    code-fold: true
+    code-tools:
+      source: true
+      toggle: false
+      caption: qmd
+    page-layout: article
+    grid:
+      sidebar-width: 300px
+      body-width: 1200px
+      margin-width: 50px
+      gutter-width: 1.5rem      
+  # typst:
+  #   template-partials:
+  #     - definitions.typ
+
+css: styles.css
+# template: html.template

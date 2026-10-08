@@ -1,0 +1,54 @@
+---
+title: "2.semestr: Náhoda, nelinearita, chaos, komplexita (2026/2027)"
+
+
+author: 
+  name: "Jarda Půlpán"
+  email: "pulpanj@volny.cz"
+
+
+listing:
+  contents: posts
+  page-size: 6
+  feed: false
+  sort: 
+    - date desc
+    - updated desc
+    - title asc
+    - description
+  sort-ui: [date,updated,title,description,categories  ]
+  field-types:
+    updated: date
+    date: date
+  type: table
+  categories: true
+  filter-ui: true
+  # table-hover:  true
+  table-striped: true
+  max-description-length: 250
+  field-display-names:
+    title: "Název"
+    description: "Popis"
+    updated: "Aktualizováno"
+    date: "Vloženo"
+    pdflink: "PDF"
+    # ntblink: "Notebook"
+  fields: [updated, title, description,date,pdflink,categories ]
+page-layout: article
+title-block-banner: true
+
+format:
+  html: 
+    page-layout: article
+    grid:
+      sidebar-width: 0px
+      body-width: 1200px
+      margin-width: 300px
+      gutter-width: 1.5rem
+---
+
+Poznámky a cvičení z [kurzu univerzity 3. věku na MFF UK](https://is.cuni.cz/studium/prijimacky/index.php?do=detail_kurz&cid=12800) v roce 2026/2027. Blog z roku 2025/2026 je [ZDE](https://pulpanj.me.cz/blogs/u3v/s1_nahoda_chaos/index.html).
+
+<!-- Plán a organizace kurzu je popsana na stránkách [U3V MFF UK] -->
+
+

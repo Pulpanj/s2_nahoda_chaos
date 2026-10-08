@@ -1,0 +1,477 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"multiCommand.commands": [
+			{
+				"command": "multiCommand.insertregionfromline",
+				"description": "insert region pair from line",
+				"sequence": [
+					"editor.action.insertCursorAtEndOfEachLineSelected",
+					"expandLineSelection",
+					"editor.action.clipboardCutAction",
+					"editor.action.clipboardPasteAction",
+					"editor.action.clipboardPasteAction",
+					"cursorUp",
+					"cursorUp",
+					{
+						"command": "type",
+						"args": {
+							"text": "# region  "
+						}
+					},
+					"cursorHome",
+					"cursorDown",
+					{
+						"command": "type",
+						"args": {
+							"text": "# endregion  "
+						}
+					},
+					"cursorHome"
+				],
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "multiCommand.ipythonlineanddown",
+				"sequence": [
+					"jupyter.execSelectionInteractive",
+					// jupyter.execSelectionInteractive
+					"cursorDown"
+				]
+			},
+			// {
+			//     "command": "multiCommand.copycharabove",
+			//     "sequence": [
+			//         "cursorUp",
+			//         "cursorColumnSelectRight",
+			//         "editor.action.clipboardCopyAction",
+			//         "cancelSelection",
+			//         "cursorLeft",
+			//         "cursorDown",
+			//         "editor.action.clipboardPasteAction"
+			//     ]
+			// }
+		],
+		"editor.formatOnPaste": true,
+		"editor.formatOnType": true,
+		// "git.ignoreLimitWarning": true,
+		// "python.autoComplete.addBrackets": true,
+		"explorer.sortOrder": "default",
+		"explorer.fileNesting.enabled": true,
+		// "python.venvPath": "../.venv/Scripts/python.exe",
+		"quarto.render.renderOnSave": false,
+		"quarto.render.previewType": "internal",
+		"quarto.render.previewReveal": true,
+		"python.defaultInterpreterPath": "d:\\\\ajps\\\\quarto\\\\.venv\\\\Scripts\\\\python.exe",
+		"cSpell.language": "en,cs",
+		"editor.cursorSurroundingLinesStyle": "default",
+		"editor.codeLens": true,
+		"editor.rulers": [
+			72,
+			98,
+			80
+			// 120,
+			// 132,
+			// 256
+		],
+		"editor.tabCompletion": "onlySnippets",
+		"editor.minimap.enabled": false,
+		"editor.smoothScrolling": true,
+		"editor.lineHeight": 0,
+		"workbench.iconTheme": "vscode-icons",
+		"editor.renderLineHighlight": "all",
+		"editor.roundedSelection": true,
+		// find selected text by default
+		// "editor.find.autoFindInSelection":true,
+		"editor.find.seedSearchStringFromSelection": "always",
+		"editor.renderWhitespace": "all",
+		// Controls whether the editor should render control characters.
+		"editor.renderControlCharacters": true,
+		"editor.showFoldingControls": "always",
+		"editor.suggest.localityBonus": false,
+		// Controls the cursor style, accepted values are 'block', 'line' and 'underline'
+		//"editor.cursorStyle": "block",
+		"editor.cursorStyle": "line",
+		// Controls whether the editor has code folding enabled.
+		"editor.folding": true,
+		// Controls whether the editor should highlight folded ranges.
+		"editor.foldingHighlight": true,
+		// Controls the strategy for computing folding ranges. `auto` uses a language specific folding strategy, if available. `indentation` uses the indentation based folding strategy.
+		"editor.foldingStrategy": "indentation",
+		//"editor.fontWeight": "100",
+		"terminal.integrated.fontSize": 15,
+		"terminal.integrated.fontFamily": "Courier New",
+		"terminal.integrated.fontWeight": "500",
+		"terminal.integrated.lineHeight": 1.2,
+		//  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+		"editor.tabSize": 4,
+		//"workbench.colorTheme": "Default Light+",
+		"workbench.colorTheme": "Light+",
+		//"terminal.integrated.shellArgs.windows": ["-ExecutionPolicy", "Bypass"],
+		//"highlightLine.borderColor": "#f0f0e69c",
+		"highlightLine.borderColor": "#fca44466",
+		//	Specifies the border color used & is changable to any valid CSS color value. For example here are a list of valid values: `'red'`, `'#FFF'` `'#FFFFFFF'`, `'RGB(255,255,255)'`, `'RGB(255, 255, 255. 0.5)'`
+		"highlightLine.borderWidth": "1px",
+		//Specifies the width of the border in pixels For example: `'2px'`
+		"highlightLine.borderStyle": "solid",
+		"editor.tokenColorCustomizations": {
+			"[Default Light+]": {
+				"variables": {
+					"fontStyle": "bold",
+					"foreground": "#0a064b"
+				},
+				"comments": {
+					"fontStyle": "italic ",
+					"foreground": "#046d38",
+					// waiting for implementation of
+					//"background": "##3342cc"
+				},
+				"keywords": {
+					"fontStyle": "underline bold ",
+					"foreground": "#3342cc"
+				},
+				"numbers": {
+					"fontStyle": "bold ",
+					"foreground": "#db4f24"
+				},
+				"strings": {
+					"fontStyle": "bold",
+					"foreground": "#37a44e"
+				},
+				"types": {
+					"fontStyle": "bold underline",
+					"foreground": "#2f2db9"
+				},
+				// "class": {
+				//   "fontStyle": "bold underline",
+				//   "foreground": "#2f2db9"
+				// },
+				"functions": {
+					"fontStyle": "underline bold",
+					"foreground": "#3342cc"
+				},
+				"textMateRules": [
+					{
+						"scope": [
+							"entity.name.type",
+							"entity.name.namespace",
+							"entity.other.attribute",
+							"entity.name.scope-resolution",
+							"entity.name.type.class",
+							"entity.name.class"
+						],
+						"settings": {
+							"foreground": "#000405",
+							"fontStyle": "bold italic underline"
+						}
+					},
+					// {
+					//   "scope": [
+					//      "entity.name.type.class",
+					//      "entity.name.class"
+					//   ],
+					//   "settings": {
+					//     "foreground": "#3915b9",
+					//     "fontStyle": "bold "
+					//   }
+					// },
+					{
+						"scope": [
+							"string.quoted.single.python",
+							"string.quoted.docstring.single.python"
+						],
+						"settings": {
+							"foreground": "#306909",
+							"fontStyle": "bold underline"
+						}
+					},
+					{
+						"scope": [
+							"string.quoted.docstring.multi.python",
+							"string.quoted.multi.python"
+						],
+						"settings": {
+							"foreground": "#0d8d2d",
+							"fontStyle": "bold"
+						}
+					},
+					// keyword.control.flow.python
+					{
+						"scope": "keyword.operator.logical.python",
+						"settings": {
+							"foreground": "#3342cc",
+							"fontStyle": "bold underline"
+						}
+					},
+					{
+						"scope": "constant.language.python",
+						"settings": {
+							"foreground": "#f53939",
+							"fontStyle": "bold italic underline"
+						}
+					},
+					{
+						"scope": "constant.character.escape.python",
+						"settings": {
+							"foreground": "#0b8f33",
+							"fontStyle": "italic underline bold"
+						}
+					},
+					{
+						"scope": "variable.parameter.function-call.python",
+						"settings": {
+							"foreground": "#2209b1",
+							"fontStyle": "italic bold"
+						}
+					},
+					{
+						"scope": "variable.parameter.function.language.python",
+						"settings": {
+							"foreground": "#2209b1",
+							"fontStyle": "bold italic"
+						}
+					},
+					{
+						"scope": "meta.function-call.arguments.python",
+						"settings": {
+							"foreground": "#2209b1",
+							"fontStyle": "italic bold"
+						}
+					},
+					{
+						"scope": "meta.member.access.python",
+						"settings": {
+							"foreground": "#042b5f",
+							"fontStyle": "italic bold"
+						}
+					},
+					{
+						"scope": "meta.item-access.python",
+						"settings": {
+							"foreground": "#042b5f",
+							"fontStyle": "bold"
+						}
+					},
+					{
+						"scope": [
+							"keyword.operator.arithmetic.python ",
+							"keyword.operator.comparison.python ",
+							"keyword.operator.assignment.python "
+						],
+						"settings": {
+							"foreground": "#000000",
+							"fontStyle": "bold "
+						}
+					},
+					{
+						"scope": "source.python",
+						"settings": {
+							"foreground": "#000000",
+							"fontStyle": "bold "
+						}
+					},
+					{
+						"scope": "support.type.property-name.json.comments",
+						"settings": {
+							"foreground": "#000000",
+							"fontStyle": "italic "
+						}
+					},
+				],
+			}
+		},
+		"workbench.colorCustomizations": {
+			"notebook.outputContainerBackgroundColor": "#ffffff",
+			"notebook.focusedEditorBorder": "#000000",
+			"notebook.focusedCellBorder": "#000000",
+			"[SAS Theme]": {
+				// "workbench.colorCustomizations": {
+				// },
+				"editorLineNumber.foreground": "#000000",
+				"editorLineNumber.activeForeground": "#ff0000",
+				// "editorLineNumber.activeForeground": "#ffdd22dd",
+				//   "editorLineNumber.foreground": "#000000",
+				"editor.lineHighlightBackground": "#f3f180",
+				"editorGutter.background": "#c9f5eb93",
+				// "editorCursor.background":"#2d2dff",
+				"editor.selectionBackground": "#a8f5f5", //Current SELECTED text
+				"editor.foreground": "#1b010ae8",
+				// "editor.background": "#f78e8e54",
+				// "editor.selectionHighlightBackground": "#e6e6e148", //same content as the selection
+				//     "editor.selectionHighlightBackground": "#f0f0e69c", //same content as the selection
+				"editor.findMatchBackground": "#17699c75", //Current SEARCH MATCH
+				//"editor.findMatchHighlightBackground": "#ff7b00", //Other SEARCH MATCHES
+				"editorCursor.foreground": "#ff009d",
+				"editorCursor.background": "#88ff00",
+				"editor.foldBackground": "#e9d522d0",
+				"editorBracketMatch.background": "#fbfbfc",
+				"editorBracketMatch.border": "#38f808",
+				"editorGutter.modifiedBackground": "#000000",
+				//    "editorLink.Foreground": "#88ff00",
+				"editorLink.activeForeground": "#eb5c49",
+			},
+			"[Default Light+]": {
+				"editorLineNumber.foreground": "#000000",
+				"editorLineNumber.activeForeground": "#ff0000",
+				// "editorLineNumber.activeForeground": "#ffdd22dd",
+				//   "editorLineNumber.foreground": "#000000",
+				"editor.lineHighlightBackground": "#f3f180",
+				"editorGutter.background": "#b4d3f1c7",
+				// "editorCursor.background":"#2d2dff",
+				"editor.selectionBackground": "#a8f5f5", //Current SELECTED text
+				"editor.background": "#fbf16a0e",
+				"editor.foreground": "#000000",
+				"editor.selectionHighlightBackground": "#e6e6e148", //same content as the selection
+				//     "editor.selectionHighlightBackground": "#f0f0e69c", //same content as the selection
+				"editor.findMatchBackground": "#17699c75", //Current SEARCH MATCH
+				//"editor.findMatchHighlightBackground": "#ff7b00", //Other SEARCH MATCHES
+				"editorCursor.foreground": "#ff009d",
+				"editorCursor.background": "#88ff00",
+				"editor.foldBackground": "#f3640550",
+				"editorBracketMatch.background": "#fbfbfc",
+				"editorBracketMatch.border": "#38f808",
+				"editorGutter.modifiedBackground": "#000000",
+				//    "editorLink.Foreground": "#88ff00",
+				"editorLink.activeForeground": "#eb5c49",
+				"editorCodeLens.foreground": "#49c5eb7e",
+				"list.errorForeground": "#2341ee",
+				"list.warningForeground": "#ee1206",
+				"gitDecoration.modifiedResourceForeground": "#9b0bd4",
+				"gitDecoration.untrackedResourceForeground": "#05860b",
+				"debugConsole.warningForeground": "#800",
+				"debugConsole.errorForeground": "#d00",
+				"debugConsole.sourceForeground": "#0c0",
+				"debugConsole.infoForeground": "#00f"
+			},
+			"terminal.background": "#0f042b",
+			"terminal.foreground": "#f7f8f5",
+			"terminal.ansiBlack": "#050a25",
+			"terminal.ansiRed": "#f54545",
+			"terminal.ansiGreen": "#47f847",
+			"terminal.ansiYellow": "#ebeb06",
+			"terminal.ansiBlue": "#0000ff",
+			"terminal.ansiMagenta": "#ff6ac1",
+			"terminal.ansiCyan": "#37abc2",
+			"terminal.ansiWhite": "#f1f1f0",
+			"terminal.ansiBrightBlack": "#686868",
+			"terminal.ansiBrightRed": "#ff5c57",
+			"terminal.ansiBrightGreen": "#03220d",
+			"terminal.ansiBrightYellow": "#f3f99d",
+			"terminal.ansiBrightBlue": "#19abf5",
+			"terminal.ansiBrightMagenta": "#ff6ac1",
+			"terminal.ansiBrightCyan": "#20f1f1",
+			"terminal.ansiBrightWhite": "#ffffff",
+			"terminal.selectionBackground": "#82c3dd80",
+			//     "terminal.background":"#090300",
+			// "terminal.foreground":"#A5A2A2",
+			// "terminalCursor.background":"#A5A2A2",
+			// "terminalCursor.foreground":"#A5A2A2",
+			// "terminal.ansiBlack":"#090300",
+			// "terminal.ansiBlue":"#01A0E4",
+			// "terminal.ansiBrightBlack":"#5C5855",
+			// "terminal.ansiBrightBlue":"#01A0E4",
+			// "terminal.ansiBrightCyan":"#B5E4F4",
+			// "terminal.ansiBrightGreen":"#01A252",
+			// "terminal.ansiBrightMagenta":"#A16A94",
+			// "terminal.ansiBrightRed":"#DB2D20",
+			// "terminal.ansiBrightWhite":"#F7F7F7",
+			// "terminal.ansiBrightYellow":"#FDED02",
+			// "terminal.ansiCyan":"#B5E4F4",
+			// "terminal.ansiGreen":"#01A252",
+			// "terminal.ansiMagenta":"#A16A94",
+			// "terminal.ansiRed":"#DB2D20",
+			// "terminal.ansiWhite":"#A5A2A2",
+			// "terminal.ansiYellow":"#FDED02"
+			"statusBar.background": "#000405",
+			"statusBar.debuggingBackground": "#00212b",
+			"statusBar.foreground": "#ffffff",
+			"tab.activeBackground": "#f0b446",
+			"tab.activeForeground": "#131300",
+			"tab.activeBorder": "#da0a0a",
+			"tab.border": "#003847",
+			"tab.inactiveBackground": "#bbe6e6",
+			"tab.inactiveForeground": "#072004cc",
+			"problemsErrorIcon.foreground": "#ff0000",
+			"problemsInfoIcon.foreground": "#232cad",
+			"problemsWarningIcon.foreground": "#eb44e2",
+			// "ignoreVscodeTheme": true,
+			"panel.background": "#a5ccfa42",
+			"panel.border": "#030303",
+			"panel.dropBackground": "#9b5d5d",
+			"panelTitle.activeBorder": "#da0a0a",
+			"panelTitle.activeForeground": "#f30166",
+			"panelTitle.inactiveForeground": "#02884a",
+			"sideBarSectionHeader.background": "#c1c2c1",
+			// Side Bar section header background color.
+			"sideBarSectionHeader.foreground": "#050002",
+			//  Side Bar section header foreground color.
+			"sideBarSectionHeader.border": "#1d020d",
+			//  Side bar section header border color.
+			//  "titleBar.activeBackground": "#a8a5a5",
+			//   "titleBar.activeForeground":"#ffffff",
+			"contrastActiveBorder": "#f0b446",
+			"sideBar.foreground": "#1a0101",
+			"sideBar.background": "#fffdfd",
+			"sideBarTitle.foreground": "#060e80ee",
+			"list.hoverForeground": "#3a4adb",
+			"list.hoverBackground": "#f1e537",
+			// jupyter output
+			"notifications.background": "#ecf753",
+			//"notifications.foreground":"#9b1219",
+			"button.background": "#041783",
+			"foreground": "#130000",
+			"widget.shadow": "#0c0000",
+			// "errorBackgroundColor": "#fffffd",
+			"editorError.background": "#f5d5df71",
+			// "editorError.foreground": "#d50000",
+			"editorError.border": "#f5b6cb71",
+			// "editorWarning.background": "#afff80d8",
+			// "editorWarning.foreground": "#60d500",
+			"editorWarning.border": "#0027d5",
+			// "editorInfo.background": "#80acffd8",
+			// "editorInfo.foreground": "#0039d5",
+			"editorInfo.border": "#1e9906",
+			// "debugTokenExpression.string":"#e2bb0f",
+			// "notebook.selectedCellBackground":"#0fe260",
+			// "notifications.background"
+		},
+		"code-eol.newlineCharacter": "↓",
+		"code-eol.returnCharacter": "←",
+		"code-eol.crlfCharacter": "↵",
+		// Mark Non-Default Line Ending
+		"code-eol.highlightNonDefault": true,
+		// Mark Extra Whitespace
+		"code-eol.highlightExtraWhitespace": true,
+		"code-eol.colors.default.foreground": "#007000",
+		"code-eol.colors.error.foreground": "#e65005",
+		"code-eol.toggleWithWhiteSpace": true,
+		// "code-eol.validLineEnding": "LF"  , // (optional) this makes "CRLF" endings render as error-color
+		// "code-eol.validLineEnding": "CRLF", // (optional) this makes "LF" endings render as error-color
+		// Defining custom colors instead of default "Rainbow" for dark backgrounds.
+		"indentRainbow.colors": [
+			"rgba(255,255,64,0.157)",
+			"rgba(127,255,127,0.157)",
+			"rgba(255,127,255,0.157)",
+			"rgba(79,236,236,0.157)"
+		],
+		"window.title": "${rootNameShort}||${activeEditorMedium}  ${dirty}  ",
+		"notebook.output.scrolling": true,
+		"jupyter.themeMatplotlibPlots": true,
+		"jupyter.widgetScriptSources": [
+			"unpkg.com",
+			"jsdelivr.com"
+		],
+		"files.exclude": {
+			"**/.csv": true,
+			"**/.parquet": true,
+			"**/.pkl": true,
+			"**/.xls": true
+		},
+		"git.ignoreLimitWarning": true,
+		"editor.detectIndentation": false
+	}
+}

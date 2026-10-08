@@ -1,0 +1,38 @@
+---
+title: |
+    To-do list  
+
+toc: false
+draft: false
+---
+
+# Interni to-do list blogu U3V
+
+## Co vylepšit na strankách
+
+-   pridat policka newly added a pole pro logicke razeni do seznamu postu
+-   cross reference option (popisky schemat a cislovani)
+-   sjednoti captions pro figs a listings
+-   zlepsit cislovani rovnic
+-   pridat seznamy obrazku kodu a tabulek
+-   linky do literatury doplnit do postu
+
+- rozchodit julia package pro 3D grafiku (Makie, GLMakie)  
+    - verze 0.8.1 nefunguje s julia 1.9, ale 0.9.0 ano, ale ta je zatim v beta verzi
+
+- napsat si par funkci 
+    - pro rendrovani tabulek do HTML+typst 9hlavičky, formatovani, colorovaní atd.
+    - pro standardni grafy
+
+-   nejaky dokument ukazujici jako U3V cist (sekvence postů)
+
+- udelat export vsech clanku do jedne PDF knihy (=> jiny _quarto.yml)
+
+
+## Náměty ze seancí
+
+- namalovat Ehrenfestův model jako vicedimenzionalni krychly s nody jako LLL LPPL a spojnicemi definiujici preskok, makrostavy jsou  pak dany zkomprimovanim matice odpovidajici krychly
+
+- Galtonova deska - jak jsou korelovany pocty kulicek v prihradkach ?
+
+
