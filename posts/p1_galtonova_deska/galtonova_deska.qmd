@@ -31,21 +31,22 @@ Jakmile kulička narazí na první kolík, má (v ideálním případě) 50% pra
 
 Kulička nakonec skončí v jedné z dolních přihrádek. Celý půvab Galtonovy desky spočívá s postupném nasypání mnoha kuliček, takže jejich počty v jednotlivých přihrádkách vytvoří hromádku se tvaru zvonovité křivky.
 
+Existuje pěkná [simulace Galtonovy desky](https://www.netlogoweb.org/launch#https://www.netlogoweb.org/assets/modelslib/Sample%20Models/Mathematics/Probability/Galton%20Box.nlogox)
+
 ![Galtonova deska](../../images/galtonova_deska.jpg){width=40%}
 
-## Počet možných drah kuličky do dané přihrádky
+## Počet možných drah jedné kuličky do dané přihrádky
 
-Procesu průchodu každé kuličky vrstvami kolíčků lze popsat popsat pomocí
-
-- sady **mikrostavů** představujících popis dráhy každé jednotlivé kuličky
-
-- a výsledným **makrostavem** - což je v případě jedné kuličky pozice přihrádky v které kulička skončí
-
-- počtu různých **mikrostavů** vedoucích k nějakému **makrostavu** se nazývá **multiplicita** makrostavu.
-
-Počty možných drah jedné kuličky do nějaké přihrádky znázornit následujícícm obrázkem (známým jako Pascalův trojúhelník). Čísla uvnitř kolíčků (modrá kolečka) označují kolika způsoby se kulička mohla dostat k danému kolíčku.
+Procesu průchodu každé kuličky vrstvami kolíčků lze popsat popsat pomocí různých drah, které vedou ke koncovému stavu - dané prihrádce. Počty možných drah jedné kuličky do nějaké přihrádky znázornit následujícícm obrázkem (známým jako Pascalův trojúhelník). Čísla uvnitř kolíčků (modrá kolečka) označují kolika způsoby se kulička mohla dostat k danému kolíčku.
 
 Hodnoty v (zelených) přihrádkách (očíslovaných od 0) jsou tedy počtem různých drah, jakými se kulička může dostat do dané přihrádky K.
+
+```{julia}
+#| echo: false
+#| output: false
+include("pascal_triangle.jl")
+```
+ 
 
 ```{julia}
 #| echo: false
@@ -53,115 +54,7 @@ Hodnoty v (zelených) přihrádkách (očíslovaných od 0) jsou tedy počtem r�
 #| fig-cap:  "Počty možných drah kuličky v Galtonova desce"
 #| fig-cap-location: bottom  # margin
 #| 
-using Plots
 
-# Compute Pascal triangle values
-function pascal_triangle(N)
-    tri = Vector{Vector{Int}}(undef, N+1)
-    tri[1] = [1]
-    for r in 1:N
-        prev = tri[r]
-        row = [1; [prev[i] + prev[i+1] for i in 1:(length(prev)-1)]; 1]
-        tri[r+1] = row
-    end
-    return tri
-end
-
-# Coordinates for triangular layout
-function pascal_coords(N)
-    coords = Dict{Tuple{Int,Int},Tuple{Float64,Float64}}()
-    for r in 0:N
-        for c in 0:r
-            x = c - r/2          # center each row
-            y = -r               # row spacing downward
-            coords[(r, c)] = (2*x, 2*y)
-        end
-    end
-    coords
-end
-
-# Plot Pascal triangle using circles + labels + arrows (quiver)
-function plot_pascal(N=7)
-    tri = pascal_triangle(N)
-    coords = pascal_coords(N)
-
-    # Collect node positions and labels
-    xs, ys, labels = Float64[], Float64[], String[]
-    for r in 0:N
-        for c in 0:r
-            x, y = coords[(r, c)]
-            push!(xs, x)
-            push!(ys, y)
-            push!(labels, string(tri[r+1][c+1]))
-        end
-    end
-
-    mcolor = vcat(fill(:lightblue, div(N*(N+1), 2)), fill(:lightgreen, N+1))
-
-    # Base scatter plot (circles)
-    plt = scatter(
-        xs, ys,
-        markersize=18,
-        markercolor=mcolor,#[:lightblue, :red],
-        markerstrokecolor=:black,
-        markerstrokewidth=1.5,
-        aspect_ratio=:equal,
-        legend=false,
-        # axisoff=true,
-        xlims=(-N-3, N+1),
-        xticks=((-N):2:N, 0:1:N),
-        xlabel="Číslo přihrádky K",
-        ylims=(-2*N-1, 3),
-        yticks=(2:-2:(-2*N), string.(["Trychtýř"; collect(0:(N-1)); "Přihrádky"])),
-        ylabel="Vrstva kolíčků M (kolikátý odraz kuličky)",
-        title="Počty možných drah (N = $N)",
-        size=(900, 600)
-    )
-
-    scatter!(plt, [0], [2], markersize=18,
-        markercolor=:red,
-        markerstrokecolor=:black,
-        markerstrokewidth=1.5,)
-
-    quiver!(plt, [0], [1.5], quiver=([0], [-1]),
-        linecolor=:red, line=3,
-        arrow=true)
-
-    # Labels inside circles
-    for (x, y, lbl) in zip(xs, ys, labels)
-        annotate!(plt, x, y, text(lbl, 8, :black, halign=:center)) #, valign=:middle))
-    end
-
-    # Arrows using quiver!
-    for r in 0:(N-1)
-        for c in 0:r
-            x1, y1 = coords[(r, c)]
-            x1=x1 .- 0.5
-            y1=y1 .- 0.5
-
-            # left child
-            x2, y2 = coords[(r+1, c)]
-            x2=x2 .+ 0.2
-            y2=y2 .+ 0.7
-            quiver!(plt, [x1], [y1], quiver=([x2-x1], [y2-y1]),
-                linecolor=:black,
-                arrow=true)
-
-            # right child
-            x1, y1 = coords[(r, c)]
-            x1=x1 .+ 0.5
-            y1=y1 .- 0.5
-            x3, y3 = coords[(r+1, c+1)]
-            x3=x3 .- 0.2
-            y3=y3 .+ 0.7
-            quiver!(plt, [x1], [y1], quiver=([x3-x1], [y3-y1]),
-                linecolor=:black,
-                arrow=true)
-        end
-    end
-
-    plt
-end
 
 plot_pascal(3)
 
@@ -191,7 +84,7 @@ Zavedeme li notaci:
 
 V každé vrstvě kolíků se kulička odráží (od jednoho z kolíku v této vrstvě) náhodně nalevo nebo napravo. V teorii pravděpodobnosti a statistice se takovýto náhodný pokus, který má právě dva možné výsledky označuje jako Bernoulliho pokus.
 
-Odraz se pro každou kuličku opakuje nezávisle N-krát a odraz v každé vrstvě nezávisí na odrazu v předchozich vrstvách). Takovýto náhodný pokus - opakování Bernoulliho pokusu N-krát a spočtení počtu jedno z možných výsledků (např. počtu odrazů napravo) se pak označuje jako binomický pokus. Pravděpodobnost, že kulička skončí s přihrádce K je dáno počtem možných drah do této přihrádky.
+Odraz se pro každou kuličku opakuje nezávisle N-krát a odraz v každé vrstvě nezávisí na odrazu v předchozich vrstvách. Takovýto náhodný pokus - opakování Bernoulliho pokusu N-krát a spočtení počtu jedno z možných výsledků (např. počtu odrazů napravo) se pak označuje jako binomický pokus. Pravděpodobnost, že kulička skončí s přihrádce K je dáno počtem možných drah do této přihrádky.
 
 Počet možných drah ke každému kolíčku je jednoduchým součtem počtu možných drah pro kolíček nalevo a napravo v předcházející vrstvě kolíčků. Pokud označíme
 
@@ -204,24 +97,19 @@ C(M,K)=C(M-1,K-1)+C(M-1,K)
 \end{equation}
 $$
 
-s počátečními podmínkami:
+s počátečními podmínkami (pro všechny hodnoty $i \in (0,N)$):
 
 $$\begin{equation}
-C(0,0)=1
+C(i,0)=1
 \end{equation}
 $$
 
 $$\begin{equation}
-C(1,0)=1
+C(i,i)=1
 \end{equation}
 $$
 
-$$\begin{equation}
-C(1,1)=1
-\end{equation}
-$$
-
-Číslo $C(M,K)$ se nazývá kombinační číslo, které udává počet způsobů, jak vybrat K prvků z M množiny (bez ohledu na pořadí prvků ve výběru). Kromě naznačeného rekuretního výpočtu lze hodnoru kombinačního čísla vypočítat pomocí faktoriálů:
+Číslo $C(M,K)$ se nazývá kombinační číslo, které udává počet způsobů, jak vybrat K prvků z M množiny (bez ohledu na pořadí prvků ve výběru). Kromě naznačeného rekuretního výpočtu lze hodnotu kombinačního čísla vypočítat pomocí faktoriálů:
 
 $$\begin{equation}
 C(M,K)=\frac{M!}{K!(M-K)!}
@@ -299,8 +187,6 @@ $$
 tedy vyjadřuje jen střední hodnotu očekávaného počtu kuliček z přihrádce K.
 
 ## Simulace Galtonovy desky s různým počtem kuliček
-
-
 
 Další obrázek ukazuje několik realizaci  otočení Galtonovy destičky se 3 různými vrstvami kolíčků s různým počtem $L$ nasypaných kuliček.  Ukazuje vždy počty kuliček v přihrádkách, vždy  4 simulace (otocení Galtonovi desky) pro 3 různé hodnoty $L$.
 
@@ -383,7 +269,7 @@ a více blíží k očekávanému počtu $E_N(K)$ kuliček v přihrádce K.
 
 Přes to všechno je skutečně pozorovaný počet kuliček, v přihrádce $K$ po vypuštění $L$ kuliček, a   $N$ odrazech každé z nich, jen náhodná veličina, o které mužeme odvodit její rozložení. 
 
-## Rozložení pravděpodobnosti četnost kuliček v přihrádce $K$
+## Rozložení pravděpodobnosti četnosti kuliček v přihrádce $K$
 
 Počet kuliček $S(N,K,L)$ v přihrádce $K$ po vypuštění $L$ kuliček (a jejich  $N$ odrazech) je náhodná veličina, kterou lze charakerizovat  pravděpodobnostmi $P_{N,L}(K,l)$  že  $S_{N,L}(K)$ bude rovno nějakému $l \in (0...L)$.
 
@@ -410,6 +296,9 @@ L, svislé čáry označují očekávanou střední hodnotu počtu kuliček v K-
 
 
 ```{julia}
+#| echo: false
+#| output: false  #asis
+#| 
 using SpecialFunctions
 using Plots
 using SpecialFunctions
@@ -418,7 +307,7 @@ C(n, k) = binomial(BigInt(n), k)
 
 P(L, l, p) = C(L, l) * p^l * (1-p)^(L-l)
 
-function one_distr(N, L, xmax, ylab,shift,xstep)
+function one_distr(N, L, xmax, ylab, shift, xstep)
     plt = plot(
         title="Binomické rozdělení "*L"P_{N,L}(K,l)"*" pro N=$N odrazů a L=$L kuliček",
         xlabel=L"l"*" - počet kuliček v přihrádce K",
@@ -453,24 +342,232 @@ function one_distr(N, L, xmax, ylab,shift,xstep)
     end
     plt
 end
+
+```
+
+```{julia}
+#| echo: false
+#| output: true  #asis
 one_distr(5, 15, 15, 0.45,-1,1)
 ```
 
 
 ```{julia}
-one_distr(7, 150,60,0.25,-3,5)
+#| echo: false
+#| output: true  #asis
+one_distr(7, 150, 60, 0.25, -3, 5)
 ```
 
 ```{julia}
-one_distr(10, 500,150,0.4,-20,20)
+#| echo: false
+#| output: true  #asis
+one_distr(10, 500, 150, 0.4, -20, 20)
 ```
+
+Předchozí grafy ukazují rozložení pravděpodobnosti, že v K-té přihrádce budeme pozorovat l kuliček. Tyto pravděpodobnosti nejsou nezávislé (pokud známe počet kuliček v J-té přihrádce, rozložení očekávané v K-té přihrádce se změní).
+
+
+## Makrostav, mikrostav a multiplicita
+
+Pro analýzu  koncového stavu po průchodu 
+
+
+Průchod **všech** kuliček vrstvami kolíčků lze popsat popsat pomocí
+
+- sady **mikrostavů** představujících popis dráhy každé jednotlivé kuličky
+
+- a výsledným **makrostavem** - což je v případě L kuliček sada možných rozdělení L kuli4ek do N  přihrádek
+
+- počtu různých **mikrostavů** vedoucích k nějakému **makrostavu** se nazývá **multiplicita** makrostavu.
+
+
+Vezměme Galtonovu desku s malým počtem vrstev (N=2). 
+
+```{julia}
+#| echo: false
+#| output: false
+include("pascal_triangle.jl")
+```
+
+```{julia}
+#| echo: false
+#| output: true
+plot_pascal(2)
+```
+
+Pak pouštějme L kuliček do Galtonovy desky jednu po druhé, kuličky si očíslujme $𝑖 \in (1...𝐿)$. 
+Pak budeme sledovat jak se kuličky umístí v dolních přihrádkách
+označených $K \in (0..N)$, kde N je počet vrstev kolíčků.
+
+Pro malou Galtonovu desku mužeme vytvořit seznam všech možných výsledků  např. pro L=5 kuliček existuje 21 makrostavů (Sk je počet kuliček v k-té přihrádce):
+
+
+```{julia}
+#| echo: false
+#| output: asis
+#| code-fold: false 
+#| 
+using DataFrames, MarkdownTables, PrettyTables
+
+L=5
+m=[(S0, S1, (L-S0-S1)) for S0 in 0:L for S1 in 0:(L-S0)]
+
+df=DataFrame(m,
+    ["S0", "S1", "S2"]
+)
+df = hcat(DataFrame(Makrostav=1:nrow(df)), df)
+pretty_table(
+    df, backend=:markdown,
+    column_labels=names(df),
+    alignment=:c
+)
+
+```
+
+Obecně je počet možných makrostavů je dán počtem možných rozkladů čísla L na K nezáporných částí.
+K určení jejich počtu lze opět použít kombinační číslo:
+
+- Ve všech K přihrádkách máme L kuliček, představme si, že je dáme jednu za druhou za sebe do řady.
+
+- K jejich rozdělení na K částí musíme určit pozice K-1 dělících pozic, což si mužeme představit jako
+vložení K-1 "přepážek" do řady kuliček. Rozšířená řada tedy má délku L+K-1.  
+
+- počet možných rozkladů je dáno počtem možných výběru K-1 pozic "přepážek" z rozšířené řady, což 
+je rovno kombinačnímu číslu
+
+
+$$
+\begin{equation}
+C(L+K-1,K-1)=\frac{(L+K-1)!}{(K-1)!(L-K1-1-K1)!}
+\end{equation}
+$$
+
+
+
+```{julia}
+using Combinatorics
+
+function count_decompositions(L, K)
+    binomial(L + K - 1, K - 1)
+end
+
+count_decompositions(5, 3)   # 15
+```
+
+
+Nicméně náš seznam nepředstavuje všechny možné mikrostavy (různé dráhy všech kuliček) - ukazuje pouze všechny možné koncové stavy, bez ohledu na to kde konkrétně skončila i-tá kulička. 
+Každá kulička totiž muže skončit v jakékoliv přihrádce (s pravděpodobností $P(K)= C(N,K)\cdot \frac{1}{2^N}$). Proto
+např. pro makrostav \#2 kulička ve sloupci K=1 může být kulička 
+číslo 1 (nebo 2,3,4,5).  Množství kombinací samozřejmně  roste pokud v přihrádce několik kuliček.
+
+## Multiplicita makrostavu
+
+Multiplicitu makrostavu $(S_0,S_1,S_2)$ z předchozí tabulky lze odvodit úvahou
+o počtu možných kombinací při postupném výběru kuliček $S_0,S_1,S_2$ při
+zahrnutí zmenšujícího se počtu kuliček z který zbývá po výběru v předchozích
+přihrádkách. .
+
+Kolik je variant výběru $S_0$ kuliček z L kuliček ?  Odpověď je dána kombinačním číslem 
+
+$$\begin{equation}
+C(L,S_0)=\frac{L!}{S_0!(L-S_0)!}
+\end{equation}
+$$
+
+V další přihrádce 1 již vybíráme ze všech kuliček, které zbyly po obsazení přihrádky 0  (t.j. z $L-S_0$ kuliček). 
+Variant výběru $S_1$ kuliček z $(L-S_0)$ kuliček je  opět dána kombinačním číslem:
+
+$$\begin{equation}
+C(L-S_0,S_1)=\frac{(L-S_0)!}{S_1!(L-S_0-S_1)!}
+\end{equation}
+$$
+
+V poslední přihrádce 2  vybíráme jen ze zbytku kuliček po vyřazení kuliček z přihrádek 0 a 1  (t.j. jen z $L-S_0-S_1$ kuliček). Kombinační číslo je tedy rovno: 
+
+$$\begin{equation}
+C(L-S_0-S_1,S_2)=\frac{(L-S_0-S_1)!}{S_2!(L-S_0-S_1-S_2)!}
+\end{equation}
+$$
+
+Počet variant výběru z přihrádek 0, 1 a 2 je dán součinem počtu variant výběru do přihrádku 0, přihrádku 1 a  přihrádku 2:
+
+
+$$
+\begin{equation}
+m=C(L,S_0) \cdot C(L-S_0,S_1) \cdot C(L-S_0-S_1,S_2)
+\end{equation}
+$$
+
+dosazení příslušných kombinačních čísel dostaneme:
+
+
+$$
+\begin{equation}
+m(S_0,S_1,S_2)=\frac{L!}{S_0!(L-S_0)!} \cdot \frac{(L-S_0)!}{S_1!(L-S_0-S_1)!} \cdot \frac{(L-S_0-S_1)!}{S_2!(L-S_0-S_1-S_2)!}
+\end{equation}
+$$
+
+Po vykrácení  $(L-S_0)!$ a $(L-S_0-S_1)!$ a po dosazení $(L-S_0-S_1-S_2)!=0!=1$ dostaneme výraz 
+pro multiplicitu makrostavu  $(S_0,S_1,S_2)$
+
+
+$$
+\begin{equation}
+m(S_0,S_1,S_2)=\frac{L!}{S_0!S_1!S_2!} 
+\end{equation}
+$$
+
+
+```{julia}
+#| echo: true
+#| output: asis
+#| code-fold: true 
+
+L=5
+m=[(S0, S1, (L-S0-S1), factorial(L)/(factorial(S0)*factorial(S1)*factorial(L-S0-S1))) for S0 in 0:L for S1 in 0:(L-S0)]
+
+df=DataFrame(m,
+    ["S0", "S1", "S2", "Multiplicita"]
+)
+df = hcat(DataFrame(Makrostav=1:nrow(df)), df)
+pretty_table(
+    df, backend=:markdown,
+    column_labels=names(df),
+    alignment=:c
+)
+
+T=sum(df[!, :Multiplicita])
+println("\nCelkový počet mikrostavů: ", T)
+
+```
+
+Naznačený postup lze použít pro obecný počet přihrádek $K \in(0..N)$, výsledný vzorec pro počet mikrostavů pro 
+makrostav $(S_0,...,S_N)$ je tedy:
+
+$$
+\begin{equation}
+m(S_0,...,S_N)=\frac{L!}{\prod_{K=0}^{N} S_K!} 
+\end{equation}
+$$
+
+Jednotlivé makrostavy Galtonovy desky mají různou pravděpodobnost. 
+
 
 ## Závěr
 
 Galtonova deska vynalezená roku 1874 stále pěkně názorně ukazuje realizaci
 několika náhodných procesů (odrazy kuličky od kolíčků) opakovanou přes všechny
-kuličky v zásobníku. Tvary a výšky hromádek kuliček v dolních přihrádkách "v
+kuličky v zásobníku. 
+
+Tvary a výšky hromádek kuliček v dolních přihrádkách "v
 průměru" odpovídají počtu možných drah jakými se kulička může dostat do té
-které přihrádky. Nicméně počet pozorovaný po otočení Galtonovy destky
-se mění a jedinné co lze odvodit je pravděpodobnost pozorování určitého počtu kuliček v určité přihrádce. 
+které přihrádky. 
+
+Nicméně počet pozorovaný po otočení Galtonovy destky
+se mění a lze odvodit je pravděpodobnost pozorování určitého počtu kuliček v určité přihrádce. 
 Ta je dána binomickým rozdělením.
+
+Celkový počet možných koncových stavů je dán kombinačním číslem a $C(L+K-1,K-1)$ a lze odvodit 
+i kolik mikrostavů vede na daný pozorovaný makrostav.
+
+
