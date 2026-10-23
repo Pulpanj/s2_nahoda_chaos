@@ -1,0 +1,588 @@
+---
+title: "Naval Prachy"
+date: "2026-10-20"
+updated: "2026-10-23"
+description: "Boltzmannova hra a Boltzmannovo rozdělení"
+draft: false
+categories: ["Mikrostav","Makrostav", "Přednáška 1" ]
+# image: "image.jpg"
+pdflink: "[![PDF](images/pdf_icon.png){width=60px}](posts/p2_boltzmann_game/naval_prachy.pdf)"
+
+engine: julia
+
+lang: cs
+
+format:
+    typst:
+        output-file: "naval_prachy"
+        output-ext: "pdf"
+        engine: typst
+---
+
+# Naval Prachy - společenská hra pro starší a pokročilé střihače 
+
+Nasledující hru lze hrát i fyzicky, ale pro úsporu času jsem ji naprogramoval.
+Boltzmannova hra ( někdy anglicky nazývaná **"Give-me-a-money"**, česky
+**"Naval prahy"**) je pěkná demonstrace jak se společnost hráčů dostává do
+ustáleného stavu (a ukazuje, že tento stav nemusí být, tak jako v životě, pro
+všechny výhodný, ba pro většinu je nevýhodný).
+
+Boltzmannova hra to  demonstruje přes všeobecné pravidlo fungovaní světa, a to nejen
+fyzikálního. To pravidlo je o entropii, která v systému o mnoha částech, které
+si interagují dle jednoduchých pravidel, prostě roste, až dosáhne ustáleného
+stavu. Ustálený stav se blíží k maximální možné entropii, respektive drobně fluktuuje, a
+kdykoliv se od ní odchýlí znovu se vrátí zpět směrem k maximální entropii.
+
+
+## Pravidla hry Naval Prachy
+
+Boltzmannovu hru hraje N hráčů (N je sudé), rozestavených v po N/2 hráčích dvou soustředných kruzích. 
+Hráči ve vnitřním kruhu tvoří dvojici s  nebližším hráčem  na vnějším kruhu.
+
+Na počátku dostane každý hráč 1 Boltzmannův dolar (**1\$B**). Variantně lze na
+počátku přidělit každému hráči celočíselný počet Boltzmannových dolarů **X0
+\$B, X0>1**, ale vždy všichni stejně. 
+Objem peněž rozdělených mezi hráče, označovaný jako celkový kapitál je tedy 
+$M=N \cdot X_0$ \$B.
+
+
+```{julia}
+#| echo: false
+#| output: true  #asis
+#| fig-cap:  "Rozestavní hráčů Boltzmannovy hry"
+
+using Plots, LaTeXStrings, Plots.PlotMeasures
+
+"""
+    boltzmann_game_concentric(N; R1=1.0, R2=1.4)
+
+Soustředné kruhy Boltzmannovy hry:
+- vnitřní kruh: N modrých hráčů
+- vnější kruh: N červených hráčů
+- hráči s indexem i stojí proti sobě
+- osy jsou potlačeny
+- hráči jsou očíslováni
+"""
+function boltzmann_game_concentric(N; R1=1.0, R2=1.4)
+    @assert N ≥ 2 "N musí být alespoň 2."
+
+    θ = range(2π+π/2, π/2, length=N+1)[1:(end-1)]
+    c = (0.0, 0.0)
+
+    # souřadnice hráčů
+    x1 = c[1] .+ R1 .* cos.(θ)
+    y1 = c[2] .+ R1 .* sin.(θ)
+
+    x2 = c[1] .+ R2 .* cos.(θ)
+    y2 = c[2] .+ R2 .* sin.(θ)
+
+    # kružnice
+    θc = range(0, 2π, length=300)
+    circ1x = c[1] .+ R1 .* cos.(θc)
+    circ1y = c[2] .+ R1 .* sin.(θc)
+    circ2x = c[1] .+ R2 .* cos.(θc)
+    circ2y = c[2] .+ R2 .* sin.(θc)
+
+    plt = plot(
+        circ1x, circ1y,
+        aspect_ratio=:equal,
+        legend=false,
+        linewidth=0.2,
+        color=:gray,
+        axis=false,          # potlačení os
+        framestyle=:none,     # bez rámečku
+        left_margin=5mm,
+        bottom_margin=5mm,
+        size=(400, 300),
+    )
+    plot!(plt, circ2x, circ2y, linewidth=0.2, color=:gray,)
+
+    # spojnice hráčů
+    for i in 1:N
+        plot!(plt, [x1[i], x2[i]], [y1[i], y2[i]],
+            color=:black, alpha=0.4, linewidth=2)
+    end
+
+    # hráči – body
+    scatter!(plt, x1, y1, color=:blue, ms=6)
+    scatter!(plt, x2, y2, color=:red, ms=6)
+
+
+    x1 = c[1] .+ (R1-0.2) .* cos.(θ)
+    y1 = c[2] .+ (R1-0.2) .* sin.(θ)
+
+    x2 = c[1] .+ (R2+0.2) .* cos.(θ)
+    y2 = c[2] .+ (R2+0.2) .* sin.(θ)
+    # očíslování hráčů
+    for i in 1:N
+        annotate!(plt, x1[i], y1[i], text("$i", :blue, 10))
+        annotate!(plt, x2[i], y2[i], text("$(i+N)", :red, 10))
+    end
+
+
+
+    return plt
+end
+
+# příklad
+boltzmann_game_concentric(8; R1=1.0, R2=1.6)
+
+
+```
+
+Následně si hráči stojící proti sobě zahrají hru **Kámen-papír-nůžky**, mající následující známá pravidla:
+
+| Hráč i\\ Hráč j        | **1 (kámen)** | **2 (nůžky)** | **3 (papír)** |
+|---------------|---------------|---------------|---------------|
+| **1 (kámen)** | 0             | **1**         | **–1**        |
+| **2 (nůžky)** | **–1**        | 0             | **1**         |
+| **3 (papír)** | **1**         | **–1**        | 0             |
+
+
+Pravděpodobnost výhry/prohry/remízy hrače i je tedy $p=\frac{3}{9}= \frac{1}{3}$    
+
+Hráč, který vyhraje dostane od protihráče **1\$B*. Pokud nastane remíza, žadné peníze se nevyměňují. 
+
+Tím konči první kolo hry a hráči na vnějším kruhu se pootočí o jednu pozici. 
+
+Druhé (a všechny další kola ) jsou shodná, dvojice si zahrají hru **Kámen-papír-nůžky**, pokud někdo vyhraje získá další peníz. 
+
+Pokud hráč již prohrál (všechny) peníze, a znovu prohrál, pak k žádné výměně nedocházi (hráč bez peněz může jen vyhrát od hráče s penězi). 
+
+Takto hra probíhá **K** kol, na jejíchž konci má každý hráč $X(i)$ \$B ($i \in 1..N$). 
+Otázkou, na kterou odpovídá  je jaké rozdělení peněz mezi hráče nastane po $K$ kolech. 
+Rozdělení kapitálu mezi hráče označme vektorem $Y_k(m)$  ($m in 0..M$ ), kde $Y_k(m)$ je počet hráčů kteří na konci $k$-tého kola mají $m$ \$B.
+
+Entropie $H$ výsledku hry (po $k$-tém kole) se vypočte z rozdělení pravděpodobností
+$p_k(m)=\frac{Y_k(m)}{m}$ (které udávají s jakou pravděpodobností bude hráč po
+$k$ kolech mít $m$ \$B).
+
+
+$$
+\begin{equation}
+H_k=- \sum_{m=0}^M{p_k(m) \cdot log(p_k(m))}
+\end{equation}
+$$
+
+
+
+## Simulace Boltzmannovy hry
+
+Simulaci jedné hry je lze realizovat následujícím programem: 
+
+```{julia}
+#| echo: true
+#| output: true  #asis
+##| fig-cap:  "Program pro simulaci Boltzmannovy hry"
+#| code-fold: false
+
+using Random
+using StatsBase
+using Plots, LaTeXStrings, Plots.PlotMeasures
+
+# ---------------------------------------------------------
+# Výsledek hry stříhání
+# 1 = kámen, 2 = nůžky, 3 = papír
+# ---------------------------------------------------------
+function rps_result(a, b)
+    if a == b
+        return 0
+    elseif (a == 1 && b == 2) || (a == 2 && b == 3) || (a == 3 && b == 1)
+        return 1
+    else
+        return -1
+    end
+end
+
+# ---------------------------------------------------------
+# Jedno kolo Boltzmannovy hry
+# ---------------------------------------------------------
+function boltzmann_round_single_circle(X_prev, k)
+    N = length(X_prev)
+    half = div(N, 2)
+
+    X_new = copy(X_prev)
+
+    for i in 1:half
+        # protihráč z druhé poloviny, rotovaný o k
+        j = mod(i + k-1, half) + half + 1
+
+        a = rand(1:3)
+        b = rand(1:3)
+
+        res = rps_result(a, b)
+
+        # hráč i
+        X_new[i]=X_prev[i]
+        if X_prev[i] > 0 && res == -1
+            X_new[i] = X_prev[i] - 1
+        end
+        if X_prev[j] > 0 && res == 1
+            X_new[i] = X_prev[i] + 1
+        end
+        # hráč j (opačný výsledek)
+        X_new[j]=X_prev[j]-(X_new[i] - X_prev[i])
+
+    end
+
+    return X_new
+end
+
+
+# ---------------------------------------------------------
+# Entropie rozdělení kapitálu
+# ---------------------------------------------------------
+function entropy_from_counts(counts)
+    total = sum(counts)
+    p = counts ./ total
+    S = 0.0
+    for pi in p
+        if pi > 0
+            S -= pi * log(pi)
+        end
+    end
+    return S
+end
+
+
+# ---------------------------------------------------------
+# Hlavní simulace
+# ---------------------------------------------------------
+function simulate_boltzmann_single_circle(N, K; X0=1)
+    X = zeros(Int, K, N)
+    Y = zeros(Int, K, (N+1)*X0)
+    S = zeros(Float64, K)
+
+    X[1, :] .= X0
+
+    counts = countmap(X[1, :])
+    for m in 0:(N*X0)
+        Y[1, m+1] = get(counts, m, 0)
+    end
+    S[1] = entropy_from_counts(Y[1, :])
+
+    for k in 2:K
+        # println(k)
+        X[k, :] = boltzmann_round_single_circle(X[k-1, :], k-1)
+        counts = countmap(X[k, :])
+        for m in 0:(N*X0)
+            Y[k, m+1] = get(counts, m, 0)
+        end
+
+        if sum(Y[k, :])*X0 != N*X0
+            error("STOP: $k Součet Y[$k,:] = $(sum(Y[k,:])) ale má být $(N*X0)")
+        end
+
+        S[k] = entropy_from_counts(Y[k, :])
+    end
+
+    return X, Y, S
+end
+
+
+```
+
+Výsledek jedné realizace hry se 40 hráči, kteří si zahráli 20 kol lze získat následovně:
+
+```{julia}
+#| echo: true
+#| output: true  #asis
+#| fig-cap:  "Simulace Boltzmannovy hry"
+#| code-fold: false
+N = 40
+K = 20
+X, Y, S = simulate_boltzmann_single_circle(N, K, X0=1);
+Y[K,:]'
+```
+
+Stav počtu peněz jednotlivých hráčů v jednotlivývh kolech ukazují následující histogramy:
+
+```{julia}
+#| echo: false
+#| output: true  #asis
+#| code-fold: true
+function plot_X_bars_cols(X)
+    K, N = size(X)
+    cols = 4
+    rows = ceil(Int, K / cols)
+    plt = plot(layout=(rows, cols), size=(1200, 300*rows))
+
+    for k in 1:K
+        plot!(plt[k],
+            1:N,
+            X[k, :],
+            seriestype=:bar,
+            xlabel="hráč i",
+            ylabel="kapitál",
+            title="X[$k,:]",
+            legend=false)
+    end
+
+    return plt
+end
+
+plt = plot_X_bars_cols(X)
+plt
+```
+
+Rozdělení kapitálu mezi hráče ukazuje následující graf zobrazující $Y_k(m)$ po jednotlivých kolech $k$:  
+
+
+```{julia}
+#| echo: false
+#| output: true  #asis
+#| code-fold: true
+function plot_Y_lines(Y)
+    K, M = size(Y)          # K kol, M = N*X0+1 hodnot kapitálu
+    plt = plot(size=(1200, 800),
+        xlabel="kapitál m",
+        ylabel="počet hráčů",
+        title="Vývoj rozdělení kapitálu Y[k,m]",
+        legend=true,
+        left_margin=5mm,
+        bottom_margin=5mm,)
+
+    max_kapital=div(M, 4)
+    for k in 1:K-1
+        plot!(plt,
+            # seriestype=:scatter,
+            0:(max_kapital-1),        # osa x = kapitál m
+            Y[k, 1:max_kapital],        # osa y = počty hráčů
+            alpha=0.5,      # průhlednost, aby byly vidět všechny křivky
+            linewidth=0.5,
+            marker=:circle,
+            markersize=0.1,
+            legend=true,
+            label="kolo $k",
+        )
+    end
+    plot!(plt,
+        # seriestype=:scatter,
+        0:(max_kapital-1),        # osa x = kapitál m
+        Y[K, 1:max_kapital],        # osa y = počty hráčů
+        alpha=0.5,      # průhlednost, aby byly vidět všechny křivky
+        linewidth=3,
+        legend=true,
+        marker=:circle,
+        markersize=5,
+        label="kolo $K"
+    )
+
+    return plt
+end
+plt = plot_Y_lines(Y)
+plt
+
+```
+
+Vývoj entropie výsledky hry po $k$-tém kole ukazuje následující graf - entropie roste k ustálenému stavu.
+
+```{julia}
+plot(1:K, S,
+    xlabel="k",
+    ylabel="Entropie",
+    linewidth=2,
+    color=:blue,
+    legend=false,
+    title="Entropie dvoukruhové Boltzmannovy hry")
+
+``` 
+
+Všeobecný trand růstu entropie $H$ ukazují následující grafy entropie , kde
+simulace prbíhala s různými počty hráču, počátečního kapitálu a počtu kol:
+
+```{julia}
+# ------------------------------------------------------------
+# 6 různých simulací
+# ------------------------------------------------------------
+params = [
+    (10, 100, 1),
+    (20, 500, 1),
+    (100, 50, 1),
+    (10, 600, 10),
+    (100, 600, 10),
+    (500, 600, 20)
+]
+
+titles = map(p -> "N=$(p[1]), K=$(p[2]), X0=$(p[3])", params)
+
+# ------------------------------------------------------------
+# Graf: 6 subplots
+# ------------------------------------------------------------
+plt = plot(layout=(2, 3), size=(1200, 800))
+plt2 = plot(layout=(2, 3), size=(1200, 800))
+
+for idx in 1:6
+    N, K, X0 = params[idx]
+    X, Y, S = simulate_boltzmann_single_circle(N, K, X0=X0)
+    # println(titles[idx])
+    # for m in 1:((N*X0)-1)
+    #     if Y[K, m+1]>0
+    #         println(m, "  ", Y[K, m], "  ", Y[K, m+1], "  ", Y[K, m]/Y[K, m+1])
+    #     end
+    # end
+
+    plot!(plt[idx],
+        1:K, S,
+        linewidth=2,
+        color=:blue,
+        xlabel="k",
+        ylabel="Entropie",
+        title=titles[idx],
+        legend=false,
+        left_margin=5mm,
+        bottom_margin=5mm,)
+
+    plot!(plt2[idx],
+        1:N,
+        X[K, :],
+        seriestype=:bar,
+        xlabel="hráč i",
+        ylabel="kapitál",
+        title=titles[idx],
+        # title="X[$K,:]",
+        legend=false)
+end
+
+display(plt2)
+display(plt)
+# plt2
+```
+
+Je zřejmé, že entropie se blíží maximu nejrychleji pro malý počet hráčů, ale
+pak fluktuuje, naopak pro větší počet hráčů (a vyšší počáteční kapitál ) je
+počet kol nutný k ustálení vyšší, ale entropie se pak již významě nemění.
+
+
+## Odvození rozdělení pravděpodobností pro maximální entropii
+
+Pokud přijmeme za dané, že vysledné rozdělení kapitálu po mnoha kolech
+maximalizuje entropii (zatím bez důkazu), tak lze pro odovození rozdělení
+$p_m=p_k(m)$, ( kde $k \to \infty$ ) použít optimalizační metody (viz. 
+[MAXENT Optimalizace](https:../../../s1_nahoda_chaos/posts/p9_optimalizace/maxent_optimalizace_3.html) ):
+
+
+### Definice optimalizační úlohy
+
+Maximalizaci entropie  lze pak nadefinovat následovně:
+
+Máme N prvků majících diskrétní hladiny (energie)  $m \in 0..M$  s pravděpodobnosti $p_m$. Chceme maximalizovat entropii
+
+$$
+\begin{equation}
+H_k=- \sum_{m=0}^M{p_m \cdot log(p_m)}
+\end{equation}
+$$
+
+při okrajových podmínkách
+
+$$
+\begin{equation}
+\sum_{m=0}^M p_m = 1 
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\sum_{m=0}^M m \cdot\ p_m = M/N=X_0
+\end{equation}
+$$
+
+(tj. je dan počáteční kapitál každého hráče $X_0$).
+
+### Lagrangeovy multiplikátory
+
+Optimalizace funkce s danými omezujícími podmínkami se řeší zavedením
+Lagrangeovy funkce (vznikne přidáním okrajových podmínek s koeficienty $\alpha , \beta$
+k rovnici, jejíž maximum hledáme):
+
+
+$$
+\begin{equation}
+\mathcal{L} = - \sum_{m=0}^M{p_m \cdot log(p_m)} + \alpha \left(\sum_{m=0}^M{p_m}  - 1 \right) + \beta \left( \sum_{m=0}^M{p_m} - X_0 \right). 
+\end{equation}
+$$
+
+
+
+Maximální entropii najdeme z podmínky stacionarity $\partial \mathcal{L} / \partial p_m = 0$.
+
+### Odvození tvaru $p_m$
+
+Spočítáme derivaci podle $p_i$:
+
+
+$$
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial p_m} = -(\log(p_m) + 1) + \alpha + \beta \cdot m = 0. 
+\end{equation}
+$$
+
+Odtud
+
+
+$$
+\begin{equation}
+\log(p_m) = \alpha - 1 + \beta \cdot m 
+\end{equation}
+$$
+
+tedy
+
+$$
+\begin{equation}
+p_m = C \cdot e^{(\beta m)}
+\end{equation}
+$$
+
+kde $C=e^{(\alpha - 1)}$ je je konstanta.
+
+
+Normalizační podmínka $\sum_{m=0}^M p_m = 1$ dá
+
+
+$$
+\begin{equation}
+1 = \sum_{m=0}^M C e^{\beta m} \quad\Rightarrow\quad C = \frac{1}{\sum_{m=0}^M e^{\beta m}}
+\end{equation}
+$$
+
+
+
+Pokud definujeme partition function
+
+
+$$
+\begin{equation}
+Z(\beta) = \sum_{m=0}^M e^{\beta m}
+\end{equation}
+$$
+
+pak pravděpodobnost $p_m$  lze zapsat jako:
+
+$$
+\begin{equation}
+p_m = \frac{e^{\beta m}}{Z(\beta)}
+\end{equation}
+$$
+
+Toto rozdělení se nazývá Boltzmannovo rozdělení. Platí pro něj následující vztah mezi $p_m$ a $p_{m+1}$:
+
+
+$$
+\begin{equation}
+\frac{p_{m+1}}{p_m}=\frac{e^{\beta (m+1)}}{Z(\beta)} \cdot \frac{e^{Z(\beta)}}{\beta m}=e^{\beta}
+\end{equation}
+$$
+
+tj. pravděpodobnosti $p_m$ tvoří geometrickou posloupnost.
+
+
+## Závěr
+
+Boltzmannova hra je analogií systému, kde se vzájemně předává konstatní množství energie
+mezi mnoha částicemi. Výsledný stav má maximální entropii.
+
+Protože si hráči předávají jen jednotlivé \$B  (a nikdy se žádný neztratí) je vysledné rozložení jejich kapitálu 
+dáno Boltzmannovým rozdělením, tj. pravděpodobnosti stavů kapitálu tvoří (klesající) geometrickou posloupnost.
+

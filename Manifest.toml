@@ -2,7 +2,7 @@
 
 julia_version = "1.12.4"
 manifest_format = "2.0"
-project_hash = "2f123871e8335e4a7a0156c3b3371465dae28c85"
+project_hash = "35de179515b0ca553dfe487c719b6151f3d35455"
 
 [[deps.ADTypes]]
 deps = ["PrecompileTools"]
@@ -1612,6 +1612,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "afe9c70ead884bf4cbb887f188d2db6d8f09d49c"
 uuid = "079eb43e-fd8e-5478-9966-2cf3e3edb778"
 version = "2.11.0+0"
+
+[[deps.NLsolve]]
+deps = ["ADTypes", "Distances", "LineSearches", "LinearAlgebra", "NLSolversBase", "Printf", "Reexport"]
+git-tree-sha1 = "2087b1aa16c09dd1768cfd3d47310a7aa266b8e9"
+uuid = "2774e3e8-f4cf-5e23-947b-6d7e65073b56"
+version = "5.0.1"
 
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
