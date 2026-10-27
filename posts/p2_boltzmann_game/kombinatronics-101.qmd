@@ -1,0 +1,918 @@
+---
+title: "Kombinatronika 101"
+date: "2026-10-27"
+updated: "2026-10-27"
+description: "Kombinatronika - zakladní sada vzorečků a kódů"
+draft: false
+categories: ["Odvozeni", "Přednáška 2" ]
+# image: "image.jpg"
+pdflink: "[![PDF](images/pdf_icon.png){width=60px}](posts/p2_boltzmann_game/kombinatronics-101.pdf)"
+
+engine: julia
+
+lang: cs
+
+format:
+    typst:
+        output-file: "kombinatronics-101"
+        output-ext: "pdf"
+        engine: typst
+---
+
+# Kombinatorika - určení počtu různych možností a jejich vylistovávání
+
+Následujících pár vzorečku a úvah o jejich odvození (plus jejich ověření jako kódů v jazyce Julia) je malým tahákem, který už byl při různých příležitostech potřeba dát na jedno místo.
+
+## Variace s opakováním - kolika způsoby lze uspořádat seznam $K$ prvků jestliže každý prvek může nabývat $N$ hodnot
+
+Variace s opakováním je počet různých **nesetříděných** uspořádání $K$ rozlišitelných prvků vybíraných z $N$ **typů** prvků.
+
+**Meme**
+
+Do klobouku dáme $N$ očíslovaných $i \in (1..N)$ (nebo jinak rozlišitelných) míčků. Pak z klobouku postupně vytahujeme $K$ míčků, do seznamu si zapisujeme, který byl v jakém pořadí. Po zapsání ale míček do do klobouku **vrátíme**, t.j. $i$th míček se může ve výběru opakovat.
+
+Kolik **různých** výběrů (seznamů) mužeme vytvořit ?
+
+**Příklad**
+
+Máme 4 různé kouzelníky (označené čísly 1..4). Večení show má ale jen 3 vystupení a my dovolíme, že se vystoupení jednotlivých kouzelníků se může opakovat. <!-- (Počet vystoupení za večer je omezen na 3 a dovolíme, aby se kouzelníci libovolně opakovali). -->
+
+Kolik různých večerů (i z pohledu toho jak půjdou kouzelníci po sobě) lze uspořádat ?
+
+**Úvaha:**
+
+- jako prvního v řadě mužeme vybrat kohokoliv (tj. jakékoliv číslo 1..N ) = 4 možnosti
+- jako druhého v pořadí mužeme vybrat kohokoliv (tj. jakékoliv číslo 1..N ) = 4 možnosti
+- jako třetího v pořadí mužeme vybrat kohokoliv (tj. jakékoliv číslo 1..N ) = 4 možnosti
+
+**Odvození:**
+
+celkový počet variací = 4 x 4 x 4=64
+
+Obecně pro $K$ prvků vybíraných z $N$ možných variant (typů) je roven
+
+$$
+\begin{equation}
+V_r(K,N)=\prod_{k=1}^{K} N =N^K
+\end{equation}
+$$
+
+Vygenerování seznamů variací s opakováním:
+
+```{julia}
+#| code-fold: false
+
+function variations_with_repetition(xs, k)
+    n = length(xs)
+    result = Vector{Vector{eltype(xs)}}()
+
+    idx = fill(1, k)
+
+    while true
+        push!(result, xs[idx])
+
+        # increment index vector
+        i = k
+        while i ≥ 1 && idx[i] == n
+            idx[i] = 1
+            i -= 1
+        end
+        i == 0 && break
+        idx[i] += 1
+    end
+
+    return result
+end
+
+vars = variations_with_repetition(1:4, 3)
+
+for (i, v) in enumerate(vars)
+    print(lpad("$i: ", 10), v)
+    if mod(i, 5)==0
+        println()
+    end
+end
+println()
+
+# Seznam typu prvků může být libovolný  
+variations_with_repetition(["A", "B", "C"], 2)
+
+```
+
+Díky datovému typu BigInt lze v Julia V(K,N) počítat snadno i pro velké hodnoty N či K:
+
+```{julia}
+#| code-fold: false
+
+Vr(K, N) = big(N)^big(K)
+
+K=20
+N=10
+println("Vr($K,$N):", Vr(K, N))
+
+K=40
+N=123
+println("Vr($K,$N):", Vr(K, N))
+
+```
+
+Logaritmus Vr(K,N)
+
+```{julia}
+#| code-fold: false
+logVr(K, N) = big(K) * log(big(N))
+K=20
+N=10
+println("logVr($K,$N):", logVr(K, N))
+println("log10 Vr($K,$N):\n", logVr(K, N)/log(10))
+K=40
+N=123
+println("logVr($K,$N):\n", logVr(K, N))
+```
+
+## Permutace - kolika způsoby lze seřadit $N$ různých prvků (bez opakování)
+
+Permutace je počet různých **nesetříděných** uspořádání $N$ rozlišitelných prvků.
+
+**Meme**
+
+Do klobouku dáme N očíslovaných 1..N nebo jinak rozlišitelných) míčků. Pak z klobouku vytahujeme jeden míček za druhým a do seznamu si zapisujeme, který byl vytažen v jakém pořadí. Po zapsání míček do do klobouku **nevrácíme**, t.j. jednou vytažený míček se může opakovat. Kolik **různých** výběrů (seznamů) mužeme vytvořit ?
+
+**Příklad**
+
+Máme 4 různé kouzelníky (označené čísly 1..4), kteří ve večerním show vystupují jeden po druhém. Kolik různých večerů (pohledu toho jak půjdou kouzelníci po sobě) lze uspořádat, za předpokladů, že všichni kouzelnící vystoupí jen jednou z žádný nebude vynechán.
+
+**Úvaha:**
+
+- jako prvního v řadě mužeme vybrat kohokoliv (tj. jakékoliv číslo 1..4 ) = 4 možnosti
+- jako druhého v pořadí už musíme vybírat je ze š zbývajících = 3 možnosti (a tyto jsou nezávislé na výběru prvního)
+- jako třetího můžeme vybrat jen jednoho ze zbývajících ze 2 = 2 možnosti (a opět tyto jsou nezávislé na výběru předchozích)
+- výběr posledního čtvrtého vystupujícího je omezen na posledního zbývajícícho, zde již není nic na výběr = 1 možnost
+
+**Odvození:**
+
+celkový počet permutací = 4 x 3 x 2 x 1=24
+
+Obecně pro $N$ prvků"
+
+$$
+\begin{equation}
+P(N)=N \cdot (N-1) \cdot (N-2) ... \cdot (2) \cdot (1)=\prod_{i=1}^{N} i! =N!
+\end{equation}
+$$
+
+Kde $N!$ je faktoriál čísla N (faktoriál 1!=1, faktoriál 0!=1 ).
+
+**Kód**
+
+Jako program v Julia lze permutace vypsat pomocí funkcí *permutations*  z modulu *Combinatorics* (*enumerate* jen očíslovává vrácené permutace):
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+N = 4
+perms = collect(permutations(1:N))
+
+println("N:", N)
+for (i, p) in enumerate(perms)
+    print(lpad("$i: ", 10), p)
+    if mod(i, 4)==0
+        println()
+    end
+end
+println()
+println("N=$N, N!=", factorial(N))
+```
+
+Pokud prvky neoznačujeme čísly tak to v Julia funguje takto:
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+xs = ["a", "b", "c"]
+perms = collect(permutations(xs))
+
+for p in perms
+    println(p)
+end
+
+```
+
+Faktoriál  v Julia je definovan funkcí *factorial* :
+
+```{julia}
+#| code-fold: false
+using Base.Iterators
+# rozdeleni mnoha cislic do vice radek
+split_to_cr_blocks(s, blen=60) = join(
+    [String(chunk) for chunk in partition(string(s), blen)], "\n"
+    )
+
+# pokud argument je Int64 → výsledek přeteče pro N>21
+println("factorial(20):", factorial(20))
+# lze použít BigInt Julia přepne na  arbitrární přesnost (GMP)
+println(
+    "factorial(big(100)):\n",
+    split_to_cr_blocks(factorial(big(100)))
+)
+```
+
+### Stirlingův vzorec - asymptotická aproximace faktoriálu
+
+- Stirlingův vzorec – základní forma:
+
+$$
+n! \approx \sqrt{2\pi n}\left(\frac{n}{e}\right)^n
+$$
+
+Relativní chyba je přibližně $O(1/n)$.
+
+
+- Přesnější Stirling (s korekcí):
+
+$$
+\begin{equation}
+n! \approx \sqrt{2\pi n}\left(\frac{n}{e}\right)^n
+\left(1 + \frac{1}{12n} + \frac{1}{288n^2} - \frac{139}{51840 n^3} - \cdots \right)
+\end{equation}
+$$
+
+Tahle verze je už velmi přesná i pro střední hodnoty $n$.
+
+
+
+ - kód v Julia:
+
+```{julia}
+#| echo: true
+#| output: false  #asis
+#| code-fold: false
+
+stirling(n) = sqrt(2π*n) * (n/ℯ)^n
+
+function stirling_corrected(n)
+    c = 1 + 1/(12n) + 1/(288n^2) - 139/(51840n^3)
+    return sqrt(2π*n) * (n/ℯ)^n * c
+end
+```
+
+```{julia}
+#| code-fold: false
+
+n=100
+println(lpad("stirling($n): ", 25), stirling(n))
+println(lpad("stirling_corrected($n): ", 25), stirling_corrected(n))
+println(lpad("factorial(big(100)):\n ", 25), split_to_cr_blocks(factorial(big(100))))
+println(lpad(
+    "počet číslic [factorial(big(100)] :", 25),
+    Int(floor(log10(factorial(big(100))))
+    )
+)
+```
+
+- logaritmická numerická varianta:
+
+Pro velká $n$ je lepší počítat logaritmus faktoriálu:
+
+$$
+\begin{equation}
+\log(n!) \approx n\log n - n + \tfrac12\log(2\pi n)
+\end{equation}
+$$
+
+Pro velké hodnoty $n$ se (hlavně pro odvození) ještě používá aproximace log(n!)
+odvozena ze zakladního vzorce (dokonce bez posledního členu):
+
+$$
+\begin{equation}
+\log(n!) \approx n\log n - n = n[log(n)-1)]
+\end{equation}
+$$
+
+
+Julia lze pro aproximaxci *log(n!)* přímo použít funkci *loggamma(n+1)*:
+
+```{julia}
+#| code-fold: false
+
+using SpecialFunctions
+
+log_stirling1(n) = n*log(n) - n + 0.5*log(2π*n)
+log_stirling0(n) = n*log(n) - n
+log_stirling(n) = loggamma(n+1)
+
+n=100
+println(lpad("log_stirling0($n): ", 35), log_stirling0(n))
+println(lpad("log_stirling1($n): ", 35), log_stirling1(n))
+println(lpad("log(stirling_corrected($n)): ", 35), log(stirling_corrected(n)))
+println(lpad("log_stirling($n): ", 35), log_stirling(n))
+
+```
+
+## Variace bez opakování
+
+Variace bez opakování je počet různých **nesetříděných** uspořádání $K$ prvků vybíraných z $N$ rozlišitelných prvků.
+
+**Meme**
+
+Do klobouku dáme N očíslovaných 1..N nebo jinak rozlišitelných) míčků. Pak z klobouku vytahujeme postupně K míčků do seznamu si zapisujeme, který byl v jakém pořadí. Po zapsání míček do do klobouku **nevrácíme**, t.j. \$jednou vytažený míček se může opakovat. Kolik **různých** výběrů (seznamů) mužeme vytvořit ? Je to analogie permutace, jen seznam nemá délku N, ale jen K.
+
+**Příklad**
+
+Máme 5 různé kouzelníky (označené čísly 1..5), kteří ve večerním show vystupují jeden po druhém. Kolik různých večerů (pohledu toho jak půjdou kouzelníci po sobě) lze uspořádat, za předpokladu, že vystoupí jen 3 kouzelnící (a žádný se nebude opakovat).
+
+**Úvaha:**
+
+- jako prvního v řadě mužeme vybrat kohokoliv (tj. jakékoliv číslo *i* z 1..5 ) = 5 možnosti
+- jako druhého v pořadí mužeme vybrat ze zbylých 4 kouzelníků (tj. jakékoliv číslo *j* z 1..5 mimo *i* ) = 4 možnosti
+- jako třetího v pořadí mužeme vybrat ze zbylých 3 kouzelníků (tj. jakékoliv číslo z 1..5 mimo *i* nebo *j*) = 3 možnosti
+
+**Odvození:**
+
+$$
+\text{počet variací} = 5\cdot 4\cdot 3=60=\frac{(5\cdot 4\cdot 3\cdot 2\cdot 1)}{2\cdot 1}
+$$
+
+Obecně pro $K$ prvků vybíraných ze seznamu $N$ možných prvků je roven
+
+$$
+\begin{equation}
+V(K,N)=N \cdot (N-1) \cdot (N-2) ... \cdot (N-K+1) =\prod_{i=N-K+1}^{N} i = \frac{N!}{(N-K)!}
+\end{equation}
+$$
+
+- Pozn. Permutace je tedy variace bez opakovaní, kde se velikost výběru K se rovná počtu N různých prvků, z kterých vybíráme:
+
+$$
+\begin{equation}
+V(N,N) = \frac{N!}{(N-N)!}=\frac{N!}{0!}=N!=P(N)
+\end{equation}
+$$
+
+
+**Kód**
+
+Vylistování všech možných kombinací bez opakování:
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+N = 5
+K = 3
+
+for (i, vr) in enumerate(collect(permutations(1:N, K)))
+    print(lpad("$i: ", 10), vr)
+    if mod(i, 5)==0
+        println()
+    end
+end
+```
+
+
+Pro vypočet počtu kombinací bez opakování lze v Julia použít funkci *prod*, nebo faktoriály:
+
+```{julia}
+#| code-fold: false
+function V(K, N)
+    prod((N-K+1):N)
+end
+
+K=3
+N=5
+println("V($K,$N): ", V(K, N))
+
+# lépe použít BigInt Julia přepne na  arbitrární přesnost (GMP)
+function V_big(K, N)
+    prod(big(N-K+1):big(N))
+end
+K=33
+N = 50
+println("V_big($K,$N): ", V_big(K, N))
+
+#  nebo lze použít vztah s faktorialy
+function V_fact(K, N)
+    factorial(big(N)) ÷ factorial(big(N-K))
+end
+K=33
+N = 50
+println("V_fact($K,$N): ", V_fact(K, N))
+
+```
+
+Pro logaritmus počtu variací bez opakování lze použít gama funkci (analogiky jako u faktoriálu), tato aproximace funguje i pro obrovská čísla:
+
+```{julia}
+#| code-fold: false
+using SpecialFunctions
+
+logV(K, N) = loggamma(N+1) - loggamma(N-K+1)
+K=33
+N = 50
+println("log V($K,$N)           : ", logV(K, N))
+println("exp(log V($K,$N))      : ", exp(logV(K, N)))
+```
+
+
+## Kombinace bez opakování
+
+**Meme**
+
+Do klobouku dáme $N$ očíslovaných $i \in (1..N)$ (nebo jinak rozlišitelných) míčků. Pak z klobouku postupně vytahujeme $K$ míčků. Vytažený míček do do klobouku již **nevrácíme**, t.j. žádný míček se může ve výběru nikdy **neopakuje**. Jestliže vytáhneme míček $i$ pak připravené tabulce s kolonkami 1..N vždy zaškrtneme kolonku $i$.
+
+Kolik **různých** výběrů (tabulek s různými kombinacemi zaškrtání) muže takto vzniknout ?
+
+**Příklad**
+
+Máme 5 různých kouzelníků (označených čísly 1..5), kteří vystupují ve večerním show, které prezentuje vždy 3 kouzelníky najednou na jedné scéně.
+
+Kolik různých večerů lze takto vidět, tak aby se výběr trojice kouzelníků neopakoval, ale je nám jedno který kouzelník bude vybrán tak, že bude na jevišti nalevo/ve středu či napravo.
+
+**Úvaha:**
+
+- jako prvního, který bude na scéně vlevo, mužeme vybrat kohokoliv (tj. jakékoliv číslo *i* z 1..5 ) = 4 možnosti
+- jako druhého, který bude na scéně uprostřed, mužeme vybrat ze zbylých 4 kouzelníků (tj. jakékoliv číslo *j* z 1..5 mimo *i* ) = 4 možnosti
+- jako třetího , který bude na scéně vpravo, mužeme vybrat ze zbylých 3 kouzelníků (tj. jakékoliv číslo z 1..5 mimo *i* nebo *j*) = 3 možnosti
+
+**Odvození:**
+
+počet kombinací bez opakování = 5 x 4 x 3=60
+
+Ale nám je jedno který vybranný kouzelnik bude na scéně napravo, ve středu nebo nalevo. Tři kouzelníky můžeme na scéně libovolně přeskupit 3!=6=P(3) způsoby.
+
+$$
+\text{počet kombinací bez opakování}=\frac{5\cdot 4\cdot 3}{1\cdot 2\cdot 3}=10
+$$
+
+Obecně pro $K$ prvků vybíraných ze seznamu $N$ možných prvků je roven
+
+$$
+\begin{equation}
+C(K,N) = \frac{N!}{K!(N-K)!}=\binom{N}{K}
+\end{equation}
+$$
+
+kde $\binom{N}{K}$ se nazývá kombinační číslo, nebo binomický koeficient.
+
+
+Výpočet $\binom{N}{K}$ se lze provést pomocí rekurzivního vztahu [viz. Galtonova deska](../p1_galtonova_deska/galtonova_deska.qmd):
+
+$$\begin{equation}
+\binom{N}{K}=\binom{N-1}{K-1}+\binom{N-1}{K}
+\end{equation}
+$$
+
+kde pro všechny hodnoty $i \in (0,N)$ platí 
+$\binom{i}{0}=1$ a $\binom{i}{i}=1$.
+
+**Kód**
+
+Vylistování seznamu kombinací:
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+N = 5
+K = 3
+
+komb = collect(combinations(1:N, K))
+
+for (i, v) in enumerate(komb)
+    print(lpad("$i: ", 10), v)
+    if mod(i, 5)==0
+        println()
+    end
+end
+```
+
+Počet kombinací:
+
+```{julia}
+#| code-fold: false
+N = 5
+K = 3
+println("N=$N K=$K     C(N,K):", binomial(N, K))
+N = 50
+K = 30
+# pro velké N lepe s BigInt
+println("N=$N K=$K   C(N,K):", binomial(big(N), K))
+```
+
+
+## Kombinace s opakováním
+
+Toto je analogické předchozím kombinacím, ale dovolujeme vybrat jakýkoliv prvek opakovaně.
+
+**Meme**
+
+Do klobouku dáme $N$ očíslovaných $i \in (1..N)$ (nebo jinak rozlišitelných) míčků. Pak z klobouku postupně vytahujeme $K$ míčků. Vytažený míček do do klobouku vždy **vrátíme**, t.j. míček se může ve výběru **opakovat**. 
+Jestliže vytáhneme míček $i$ pak připravené tabulce s kolonkami 1..N vždy uděláme (další) křížek v kolonce $i$.
+
+Kolik **různých** výběrů (tabulek s různými kombinacemi křížků v kolonkách) muže takto vzniknout ?
+
+**Příklad**
+
+Máme N=4 různých kouzelníků (označených čísly 1..4), kteří vystupují ve večerním
+show, které prezentuje 3 kouzelnícká čísla. Kouzelníci se ve výběru čísel pro show mohou
+opakovat. Kolik kombinací show mužeme vidět - a teď opět nehledíme na to v jakém
+pořadí kouzelníci vystupovali.
+
+
+**Úvaha:**
+
+Každou jednotlivou show si mužeme zapsat pomocí křížků, jak ukazují řádky následující tabulky: 
+
+| kouzelník #1 |kouzelník #2 |kouzelník #3 |kouzelník #4 | Řetězec | Význam| 
+| ---- | ---- | ---- | ---- | ---- | ---- |
+|++|||+  | ++\|\|\|+ |- vystoupí 2x kouzelník číslo 1 a 1x  kouzelník číslo 4
+|+|+|+|  | +\|+\|+\| |- vystoupí 1x kouzelník číslo 1 , 1x kouzelník číslo 2 a 1x kouzelník číslo 3
+|||+++|  | \|\|+++\| | - vystoupí 3x kouzelník číslo 3
+
+K každé řádce máme tedy vždy 3 křížky (K=3 počet kouzelníckých čísel ve večerním show)
+oddělených N−1 "přepážkami" (N=4), které oddělují číslice odpovídající kouzelníkům. 
+Každá kombinace je tedy definována kombinací pozic přepážek v řetězci délky 6 znaků (3 krát + a 3 krát \|). 
+
+Počet různých kombinací večerního show je tedy dán počtem možných výběrů pozic 3 přepážek (N-1) v 6 pozicích (N+K-1) řetězce.
+
+**Odvození:**
+
+Počet různých kombinací s opakováním  je roven počtu výběrů (N-1) pozic přepážek (bez opakování) ze (N+K-1) možných pozic, a to vede na kombinační číslo
+
+$$
+\begin{equation}
+C_r(K,N)=\binom{N+K-1}{N-1}=\binom{N+K-1}{K}
+\end{equation}
+$$
+
+Druhý binomický koeficient jen ukazuje, že můžeme  také počítat, do jakých pozic umístit K křížků (výběr kouzelníka do určitého sloupce tabulky).
+
+pro příklad s kouzelníky:
+$$
+\begin{equation}
+C_r(K,N)=\binom{6}{3}=20
+\end{equation}
+$$
+
+
+**Kód**
+
+Vylistování seznamu kombinací:
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+N = 4
+K = 3
+
+komb = collect(with_replacement_combinations(1:N, K))
+
+for (i, cr) in enumerate(komb)
+    print(lpad("$i: ", 10), cr)
+    if mod(i, 5)==0
+        println()
+    end
+end
+```
+
+Počet kombinací s opakovaním:
+
+
+```{julia}
+#| code-fold: false
+N = 4
+K = 3
+println("N=$N K=$K     Cr(N,K):", binomial(N+K-1, K))
+N = 50
+K = 30
+# pro velké N lepe s BigInt
+println("N=$N K=$K   Cr(N,K):", binomial(big(N+K-1), K))
+```
+
+
+
+## Multinomická kombinace bez opakování
+
+Doposud jsme analyzovali počty možných uspořádání nebo rozdělovali prvky na 2 skupiny. Analyzoavt lze ovšem i rozdělování na více skupin.
+
+**Meme**
+
+Do klobouku dáme $N$ očíslovaných $i \in (1..N)$ (nebo jinak rozlišitelných) míčků. Pak z klobouku postupně vytahujeme všechny míčky. Vytažený míček do do klobouku již **nevrácíme**, t.j. žádný míček se může ve výběru nikdy **neopakuje**. 
+Vytažené míčky  pokládáme  na $K hromádek, tak aby na hromádkách na konci po vytažení všech míčků, bylo na hromádkách přesně $m_1,m_2...m_K$ míčků (platí $\sum_{k=1}^K{m_k}=N$ ).
+
+Kolika způsoby můžeme takovýto výběr realizovat (pořadí míčků v každé hromádce není důležité) ?
+
+
+**Příklad**
+
+Máme 6 různých kouzelníků (označené čísly 1..5), kteří mohou vystoupit ve 3
+večerních show, v různých divadlech. Chceme mít v prvním divadle dva
+kouzelníky, v druhém  nechť vystoupí jen jeden kouzelník a v posledním třetím divadle pak
+vystoupí zbylí tři kouzelníci.
+
+Kolik různých večerů lze takto uspořádat, tak aby rozdělení počtu kouzelníků mezi divadla  zůstalo 1,2 a 3 
+(neřešíme v jakém pořadí kouzelníci v daném divadle vvystoupi) ?
+
+**Úvaha:**
+
+- do  prvního divadla můžeme vybrat jakékoliv 2 kouzelníky ze 6 (tj. kombinační číslo $\binom{5}{2}=\frac{6 \cdot 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1}{(1 \cdot 2)(1 \cdot 2 \cdot 3 \cdot 4)} = 15$  způsoby).
+- jako druhého divadla budeme vybírat 1 kouzelníka z 4 zbylých  (tj. kombinační číslo $\binom{4}{1}=\frac{4 \cdot 3 \cdot 2 \cdot 1}{(1)(1 \cdot 2 \cdot 3)} = 4$  způsoby).
+- do třetího divadla pak vybeze všechny zbylé tj. 3 ze 3 t.j. jedinným zpusobem.
+
+**Odvození:**
+
+počet možných rozdělení (2,1,3)  = $\binom{6}{2} \cdot \binom{4}{1} \cdot \binom{3}{3}=  15 \cdot 4 \cdot 1=60$
+
+
+Obecně pro $K$ prvků vybíraných ze seznamu $N$ možných prvků je roven
+
+$$
+\begin{equation}
+m(m_1, \ldots ,m_K)=\frac{N!}{\prod_{k=0}^{N} m_k!} 
+\end{equation}
+$$
+
+**Kód**
+
+Vylistování seznamu různých rozdělení $m_1,m_2...m_K$  na $K$ hromádek  (platí $\sum_{k=1}^K{m_k}=N$ ):
+
+
+```{julia}
+#| code-fold: false
+multinomial(ks::Vector{Int}) = factorial(sum(ks)) ÷ prod(factorial.(ks))
+
+# příklad
+println("multinomial([2, 1, 3]: ", multinomial([2, 1, 3]))
+
+```
+
+Funkce generující multinomické hromádky podle požadovaných velikostí mK:
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+function generuj_multinomialni_hromadky(prvky, mK)
+    if sum(mK) != length(prvky)
+        throw(ArgumentError("Součet velikostí ve vektoru mK musí být roven celkovému počtu prvků N."))
+    end
+
+    function _rekurze(indices, mK_zbytek)
+        if isempty(mK_zbytek)
+            return [Vector{eltype(prvky)}[]]
+        end
+
+        k = first(mK_zbytek)
+        zbytek_mK = mK_zbytek[2:end]
+
+        vysledky = Vector{Vector{eltype(prvky)}}[]
+
+        for comb in combinations(indices, k)
+            c_vec = collect(comb)
+            zbyvajici_indexy = setdiff(indices, c_vec)
+            aktualni_hromadka = prvky[c_vec]
+
+            dalsi_hromadky = _rekurze(zbyvajici_indexy, zbytek_mK)
+            for d in dalsi_hromadky
+                push!(vysledky, vcat([aktualni_hromadka], d))
+            end
+        end
+        return vysledky
+    end
+
+    return _rekurze(collect(1:length(prvky)), mK)
+end
+
+prvky = 1:6  #['A', 'B', 'C', 'D', 'E', 'F']
+mK = [3, 1, 2]  # rozdělení 6 prvků na 3 hromádky po 3,1,2
+
+for (i, g) in enumerate(generuj_multinomialni_hromadky(prvky, mK))
+    print(lpad("$i-ith: ", 12), g)
+    if mod(i, 2)==0
+        println()
+    end
+end
+println("počet kombinací hromádek [3, 1, 2]:", length(generuj_multinomialni_hromadky(prvky, mK)))
+
+```
+
+
+Generátor všech možných vektorů mK (délky m), jejichž součet je N,
+přičemž každý prvek mK[i] >= 1.
+
+```{julia}
+#| code-fold: false
+
+function generuj_vsechny_mK(N::Int, m::Int)
+    """
+    Vygeneruje všechny možné vektory mK (délky m), jejichž součet je N,
+    přičemž každý prvek mK[i] >= 1.
+    """
+    if m == 1
+        return [[N]]
+    end
+
+    vysledky = Vector{Int}[]
+    # První prvek mK[1] může nabývat hodnot od 1 do N - (m - 1)
+    for k1 in 1:(N-m+1)
+        # Rekurzivně vygenerujeme zbytek pro m-1 hromádek o součtu N - k1
+        zbyvajici = generuj_vsechny_mK(N - k1, m - 1)
+        for z in zbyvajici
+            push!(vysledky, vcat([k1], z))
+        end
+    end
+
+    return vysledky
+end
+
+# --- Příklad použití ---
+N = 6
+m = 3
+vsechny_mK = generuj_vsechny_mK(N, m)
+
+println("Možné vektory mK pro N = $N a m = $m:")
+for mk in vsechny_mK
+    println(mk)
+end
+
+```
+
+
+## Iterátory v jazyce Julia
+
+Pokud je počet variací/kombinací/permutací velký lze místo vygenrování jejich
+celého seznamu (jako vektoru) použít **iterátor**, který vrací jednotlivé prvky
+seznamů (bez toho aby jej napřed celý vytvořil v paměti).
+
+```{julia}
+#| code-fold: false
+# following module was generated by Copilot
+include("LazyCombinatorics.jl")
+
+println("permutace")
+for (i,p) in enumerate(LazyCombinatorics.Permutations(1:4))
+    print(lpad("$i-ith: ", 15), p)
+    if mod(i, 3)==0
+        println()
+    end
+end
+```
+
+```{julia}
+#| code-fold: false
+println("kombinace bez opakovani")
+for (i, c) in enumerate(LazyCombinatorics.Combinations(1:5, 3))
+    print(lpad("$i-ith: ", 15), c)
+    if mod(i, 3)==0
+        println()
+    end
+end
+```
+
+```{julia}
+#| code-fold: false
+println("kombinace opakovani")
+for (i, cr) in enumerate(LazyCombinatorics.CombinationsRep(1:3, 4))
+    print(lpad("$i-ith: ", 15), cr)
+    if mod(i, 3)==0
+        println()
+    end
+end
+
+```
+
+```{julia}
+#| code-fold: false
+println("variace bez opakovani")
+for (i, v) in enumerate(LazyCombinatorics.Variations(1:5, 3))
+    print(lpad("$i-ith: ", 15), v)
+    if mod(i, 3)==0
+        println()
+    end
+end
+
+```
+
+```{julia}
+#| code-fold: false
+println("variace s opakovanim")
+for (i, vr) in enumerate(LazyCombinatorics.VariationsRep(1:4, 3))
+    print(lpad("$i-ith: ", 15), vr)
+    if mod(i, 3)==0
+        println()
+    end
+end
+
+```
+- Iterátor generující multinomické hromádky podle požadovaných velikostí mK:
+
+```{julia}
+#| code-fold: false
+using Combinatorics
+
+function generuj_multinomialni_hromadky_iterator(prvky, mK)
+    """
+    Vrátí Channel (iterátor), který líně generuje všechny možné 
+    multinomické hromádky z prvků podle velikostí ve vektoru mK.
+    """
+    if sum(mK) != length(prvky)
+        throw(ArgumentError("Součet velikostí ve vektoru mK musí být roven celkovému počtu prvků N."))
+    end
+
+    T = eltype(prvky)
+
+    return Channel{Vector{Vector{T}}}() do ch
+        function _rekurze(indices, mK_zbytek, current_partition)
+            if isempty(mK_zbytek)
+                put!(ch, current_partition)
+                return
+            end
+
+            k = first(mK_zbytek)
+            zbytek_mK = mK_zbytek[2:end]
+
+            # Combinatorics.combinations vrací iterátor
+            for comb in combinations(indices, k)
+                c_vec = collect(comb)
+                zbyvajici_indexy = setdiff(indices, c_vec)
+                aktualni_hromadka = prvky[c_vec]
+
+                _rekurze(zbyvajici_indexy, zbytek_mK, vcat(current_partition, [aktualni_hromadka]))
+            end
+        end
+
+        _rekurze(collect(1:length(prvky)), mK, Vector{T}[])
+    end
+end
+
+# --- Příklad použití ---
+prvky = ['A', 'B', 'C', 'D']
+mK = [2, 2]  # rozdělení 4 prvků na dvě hromádky po 2
+prvky = 1:6  #['A', 'B', 'C', 'D', 'E', 'F']
+mK = [3, 1, 2]  # rozdělení 6 prvků na 3 hromádky po 3,1,2
+
+
+for (i, g) in enumerate(generuj_multinomialni_hromadky_iterator(prvky, mK))
+    print(lpad("$i-ith: ", 12), g)
+    if mod(i, 2)==0
+        println()
+    end
+end
+
+```
+
+
+- Iterátor generující všechny možné vektory mK (délky m), jejichž součet je N,
+přičemž každý prvek mK[i] >= 1.
+
+```{julia}
+#| code-fold: false
+function iteruj_vsechny_mK(N::Int, m::Int)
+    """
+    Vrátí Channel (iterátor), který postupně (lazy) generuje
+    všechny možné vektory mK (délky m) se součtem N, kde mK[i] >= 1.
+    """
+    return Channel{Vector{Int}}() do ch
+        function _rekurze(N_zbyva, m_zbyva, prefix)
+            if m_zbyva == 1
+                put!(ch, vcat(prefix, [N_zbyva]))
+                return
+            end
+
+            # První prvek může nabývat hodnot tak, aby zbylo dost pro zbytek
+            for k1 in 1:(N_zbyva-m_zbyva+1)
+                _rekurze(N_zbyva - k1, m_zbyva - 1, vcat(prefix, [k1]))
+            end
+        end
+
+        _rekurze(N, m, Int[])
+    end
+end
+
+# --- Příklad použití ---
+N = 6
+m = 3
+
+println("Iterování přes vygenerované vektory mK pro N = $N a m = $m:")
+for mk in iteruj_vsechny_mK(N, m)
+    println(mk)
+end
+
+```
+
+## Shrnutí
+
+| Symbol | Název | Pořadí | Opakování | v modulu Combinatorics |
+|--------------|--------------|--------------|--------------|-----------------|
+| $V_r(K,N)=N^K$ | **Variace s opakováním** | ano | ano |  |
+| $V(K,N)$ | **Variace bez opakování** | ano | ne | collect(permutations(1:N, k)) |
+| $N!$ | **Permutace** | ano | ne (všechny prvky) | collect(permutations(1:N,N)) |
+| $\binom{N}{K}$ | **Kombinace bez opakování** | ne | ne | collect(combinations(1:N, K)) |
+| $\binom{N+K-1}{K}$ | **Kombinace s opakováním** | ne | ano | collect(with_replacement_ combinations(1:N, K)) |
+| $\frac{N}{m_1! \cdot m_2! \ldots m_k!}$ | **Multinomická kombinace** | ne | ne | |
+
+Pro větší kolekce skupin používat iterátory, které vždy vrátí další element,
+bez toho, že by v paměti generovaly celou kolekci elementů.

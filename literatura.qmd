@@ -57,6 +57,27 @@ book_list = [
         # "Poznámka" => "LibreTexts je online version, která obsahuje i další materiály, včetně cvičení a řešení.",
         "cover" => "/images/stats_full.png"
     ),
+    OrderedDict(
+        "label" => "Přednáška 2 (Give-me-a-money)",
+    ),
+    OrderedDict(
+        "Název" => "Give Me Money: Worked Solutions for the Boltzmann Game",
+        "Autor" => "Joel Ong",
+        # "PDF" => "https://math.dartmouth.edu/~prob/prob/prob.pdf",
+        "URL" => "https://hyad.es/boltzmann",
+        # "Poznámka" => "LibreTexts je online version, která obsahuje i další materiály, včetně cvičení a řešení.",
+        "cover" => "/images/www.png"
+    ),
+    OrderedDict(
+        "Název" => "An Introduction to Probability Theory and Its Applications ",
+        "Autor" => "Williama Feller",
+        "PDF" => "https://bitcoinwords.github.io/assets/papers/an-introduction-to-probability-theory-and-its-applications.pdf",
+        # "URL" => "https://hyad.es/boltzmann",
+        # "Poznámka" => "LibreTexts je online version, která obsahuje i další materiály, včetně cvičení a řešení.",
+        "cover" => "/images/pdf_icon.png"
+    ),
+
+
 
     # OrderedDict(
     #     "Název" => "",

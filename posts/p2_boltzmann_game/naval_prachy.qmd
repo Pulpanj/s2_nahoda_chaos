@@ -305,7 +305,12 @@ function plot_X_bars_cols(X)
     K, N = size(X)
     cols = 4
     rows = ceil(Int, K / cols)
-    plt = plot(layout=(rows, cols), size=(1200, 300*rows))
+    plt = plot(
+        layout=(rows, cols),
+        size=(1200, 300*rows),
+        left_margin=8mm,
+        bottom_margin=8mm,
+    )
 
     for k in 1:K
         plot!(plt[k],
@@ -339,8 +344,9 @@ function plot_Y_lines(Y)
         ylabel="počet hráčů",
         title="Vývoj rozdělení kapitálu Y[k,m]",
         legend=true,
-        left_margin=5mm,
-        bottom_margin=5mm,)
+        left_margin=8mm,
+        bottom_margin=8mm,
+        )
 
     max_kapital=div(M, 4)
     for k in 1:K-1
@@ -384,7 +390,10 @@ plot(1:K, S,
     linewidth=2,
     color=:blue,
     legend=false,
-    title="Entropie dvoukruhové Boltzmannovy hry")
+    title="Entropie dvoukruhové Boltzmannovy hry",
+    left_margin=8mm,
+    bottom_margin=8mm,
+)
 
 ``` 
 
@@ -409,8 +418,15 @@ titles = map(p -> "N=$(p[1]), K=$(p[2]), X0=$(p[3])", params)
 # ------------------------------------------------------------
 # Graf: 6 subplots
 # ------------------------------------------------------------
-plt = plot(layout=(2, 3), size=(1200, 800))
-plt2 = plot(layout=(2, 3), size=(1200, 800))
+plt = plot(layout=(2, 3), size=(1200, 800),
+    left_margin=8mm,
+    bottom_margin=8mm,
+)
+plt2 = plot(
+    layout=(2, 3), size=(1200, 800),
+    left_margin=8mm,
+    bottom_margin=8mm,
+)
 
 for idx in 1:6
     N, K, X0 = params[idx]
@@ -430,8 +446,7 @@ for idx in 1:6
         ylabel="Entropie",
         title=titles[idx],
         legend=false,
-        left_margin=5mm,
-        bottom_margin=5mm,)
+    )
 
     plot!(plt2[idx],
         1:N,

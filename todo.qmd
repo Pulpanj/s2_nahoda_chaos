@@ -35,4 +35,6 @@ draft: false
 
 - Galtonova deska - jak jsou korelovany pocty kulicek v prihradkach ?
 
+- Rozkalady čísel na sčítance velikosti 0-M
+
 

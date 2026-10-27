@@ -271,7 +271,7 @@ Přes to všechno je skutečně pozorovaný počet kuliček, v přihrádce $K$ p
 
 ## Rozložení pravděpodobnosti četnosti kuliček v přihrádce $K$
 
-Počet kuliček $S(N,K,L)$ v přihrádce $K$ po vypuštění $L$ kuliček (a jejich  $N$ odrazech) je náhodná veličina, kterou lze charakerizovat  pravděpodobnostmi $P_{N,L}(K,l)$  že  $S_{N,L}(K)$ bude rovno nějakému $l \in (0...L)$.
+Počet kuliček $S_{N,L}(K)$ v přihrádce $K$ po vypuštění $L$ kuliček (a jejich  $N$ odrazech) je náhodná veličina, kterou lze charakerizovat  pravděpodobnostmi $P_{N,L}(K,l)$,  že  $S_{N,L}(K)$ bude rovno nějakému $l \in (0...L)$.
 
 Označíme-li 
 
@@ -285,7 +285,7 @@ je dána binomickým rozložením s parametry $p$ a $q$:
 
 $$
 \begin{equation}
-P_{N,L}(K,l)=C(L,l) \cdot p^k \cdot q^{(L-k)}
+P_{N,L}(K,l)=C(L,l) \cdot p^K \cdot q^{(L-K)}
 \end{equation}
 $$
 
@@ -320,8 +320,8 @@ function one_distr(N, L, xmax, ylab, shift, xstep)
         bottom_margin=5mm,
     )
 
-    function vline_limited!(p, x; ymin=0, ymax=maximum(p[1][:y]), color=:gray, lw=0.5, ls=:dash)
-        plot!(p, [x, x], [ymin, ymax], lw=lw, ls=ls, label="")
+    function vline_limited!(p, x; ymin=0, ymax=maximum(p[1][:y]), color=:gray, lw=0.5) #, ls=:dash)
+        plot!(p, [x, x], [ymin, ymax], label="") #, lw=lw, ls=ls,
     end
 
     # Pro každé L vykreslíme celou křivku P(L,l)

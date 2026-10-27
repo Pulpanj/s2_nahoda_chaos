@@ -114,6 +114,7 @@ format:
   html:
     toc: true
     number-sections: false
+    code-line-numbers: true
     toc-depth: 4       # Optional: controls heading levels shown
     toc-expand: false
     smooth-scroll: true
@@ -133,7 +134,8 @@ format:
       body-width: 1200px
       margin-width: 50px
       gutter-width: 1.5rem      
-  # typst:
+  typst:
+    code-line-numbers: true
   #   template-partials:
   #     - definitions.typ
 

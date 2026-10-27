@@ -47,7 +47,7 @@ format:
       gutter-width: 1.5rem
 ---
 
-Poznámky a cvičení z [kurzu univerzity 3. věku na MFF UK](https://is.cuni.cz/studium/prijimacky/index.php?do=detail_kurz&cid=12800) v roce 2026/2027. Blog z roku 2025/2026 je [ZDE](https://pulpanj.me.cz/blogs/u3v/s1_nahoda_chaos/index.html).
+Poznámky a cvičení z [kurzu univerzity 3. věku na MFF UK](https://is.cuni.cz/studium/prijimacky/index.php?do=detail_kurz&cid=12800) v roce 2026/2027. **Blog z roku 2025/2026** je [ZDE](https://pulpanj.me.cz/blogs/u3v/s1_nahoda_chaos/index.html).
 
 <!-- Plán a organizace kurzu je popsana na stránkách [U3V MFF UK] -->
 
