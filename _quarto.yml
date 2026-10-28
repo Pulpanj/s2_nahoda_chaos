@@ -28,6 +28,11 @@ filters:
 lang: cs
 date-format: iso
 
+# listing:
+#   # contents: /posts/**/*.qmd
+#   exclude:
+#     exclude_from_post_listing: true
+
 website:
   description: "Blog psaný na základě přednášek university 3 věku na MFF UK: Náhoda, nelinearita, chaos, komplexita. Moderní příspěvky fyziky k porozumění světu kolem nás."
   site-url: http://www.pulpanj.me.cz/blogs/u3v/s2_nahoda_chaos/ # you must change this appropriately for RSS feeds to work properly
@@ -134,9 +139,7 @@ format:
       body-width: 1200px
       margin-width: 50px
       gutter-width: 1.5rem      
-  typst:
-    code-line-numbers: true
-  #   template-partials:
+   #   template-partials:
   #     - definitions.typ
 
 css: styles.css

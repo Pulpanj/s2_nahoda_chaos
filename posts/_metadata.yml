@@ -13,7 +13,6 @@ author:
   name: "Jarda Půlpán"
   email: "pulpanj@volny.cz"
 
-
 # Enable banner style title blocks
 title-block-banner: true
 
@@ -32,6 +31,7 @@ format:
       number-depth: 2
       cap-location: top
       fig-cap-location: top
+      code-line-numbers: true
       include-in-header:
           - text: |
               #set table(stroke: 0.5pt + black) 
@@ -58,8 +58,8 @@ format:
               }
               code
               }
-
       code-annotations: below
+
 
   html:
     # theme:
@@ -87,9 +87,6 @@ format:
     cap-location: top
     fig-cap-location: top
     title: "All Posts"
-    # listing:
-    #   contents: /posts
-    #   type: default
 
 css: /resources/styles.css        
 

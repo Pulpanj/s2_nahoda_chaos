@@ -1,0 +1,56 @@
+digraph G {
+  graph [layout=neato;nodesep=4.0];
+  node [fontsize=4 width=0.28 height=0.28 fixedsize=true shape=circle style=filled];
+
+  edge [fontsize=6 penwidth=0.4 arrowsize=0.4];
+
+  "0000" [label="0000\nR=-4", fillcolor="#0000ff"]; 
+  "0001" [label="0001\nR=-2", fillcolor="#8080ff"]; 
+  "0010" [label="0010\nR=-2", fillcolor="#8080ff"]; 
+  "0011" [label="0011\nR=0", fillcolor="#ffffff"]; 
+  "0100" [label="0100\nR=-2", fillcolor="#8080ff"]; 
+  "0101" [label="0101\nR=0", fillcolor="#ffffff"]; 
+  "0110" [label="0110\nR=0", fillcolor="#ffffff"]; 
+  "0111" [label="0111\nR=2", fillcolor="#ff8080"]; 
+  "1000" [label="1000\nR=-2", fillcolor="#8080ff"]; 
+  "1001" [label="1001\nR=0", fillcolor="#ffffff"]; 
+  "1010" [label="1010\nR=0", fillcolor="#ffffff"]; 
+  "1011" [label="1011\nR=2", fillcolor="#ff8080"]; 
+  "1100" [label="1100\nR=0", fillcolor="#ffffff"]; 
+  "1101" [label="1101\nR=2", fillcolor="#ff8080"]; 
+  "1110" [label="1110\nR=2", fillcolor="#ff8080"]; 
+  "1111" [label="1111\nR=4", fillcolor="#ff0000"]; 
+
+  "0000" -> "0001" [dir=both];
+  "0000" -> "0010" [dir=both];
+  "0000" -> "0100" [dir=both];
+  "0000" -> "1000" [dir=both];
+  "0001" -> "0011" [dir=both];
+  "0001" -> "0101" [dir=both];
+  "0001" -> "1001" [dir=both];
+  "0010" -> "0011" [dir=both];
+  "0010" -> "0110" [dir=both];
+  "0010" -> "1010" [dir=both];
+  "0011" -> "0111" [dir=both];
+  "0011" -> "1011" [dir=both];
+  "0100" -> "0101" [dir=both];
+  "0100" -> "0110" [dir=both];
+  "0100" -> "1100" [dir=both];
+  "0101" -> "0111" [dir=both];
+  "0101" -> "1101" [dir=both];
+  "0110" -> "0111" [dir=both];
+  "0110" -> "1110" [dir=both];
+  "0111" -> "1111" [dir=both];
+  "1000" -> "1001" [dir=both];
+  "1000" -> "1010" [dir=both];
+  "1000" -> "1100" [dir=both];
+  "1001" -> "1011" [dir=both];
+  "1001" -> "1101" [dir=both];
+  "1010" -> "1011" [dir=both];
+  "1010" -> "1110" [dir=both];
+  "1011" -> "1111" [dir=both];
+  "1100" -> "1101" [dir=both];
+  "1100" -> "1110" [dir=both];
+  "1101" -> "1111" [dir=both];
+  "1110" -> "1111" [dir=both];
+}

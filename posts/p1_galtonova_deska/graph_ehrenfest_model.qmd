@@ -1,0 +1,230 @@
+---
+title: "Grafy mikrostavů Ehrenfestova modelu"
+date: "2026-10-28"
+updated: "2026-10-29"
+description: "Jak zobrazit přeskoky blech v grafu mikrostavů a jak z nich analyzovat makrostavy"
+draft: false
+categories: ["Mikrostav","Makrostav", "Přednáška 1" ]
+# image: "image.jpg"
+pdflink: "[![PDF](images/pdf_icon.png){width=60px}](posts/p1_galtonova_deska/graph_ehrenfest_model.pdf)"
+
+engine: julia
+
+lang: cs
+
+format:
+    typst:
+        output-file: "graph_ehrenfest_model"
+        output-ext: "pdf"
+        engine: typst
+---
+
+# Grafy mikrostavů Ehrenfestova modelu
+
+## Makrostavy modelu psů a blech
+
+[Model blech skákajících mezi dvěma psy](https:../../../s1_nahoda_chaos/posts/p1_mikro_makro_stavy/psy_blechy.html)
+popisoval vztahy mezi pozorovanými makrostavy - počtem blech na pravém psu $R_n$
+po $n$ krocích. 
+
+Model byl popsán grafem Markovovského řetězce jeho makrostavů a
+z ní vytvořené matice přechodů mezi těmito makrostavy, pomocí které lze řešit pravděpodobnosti makrostavů a 
+jejich stacionární rozdělení.
+
+Nicméně popis vztahu mezi makrostavy (počty blech napravém psu) a mikrostavy
+(seznamy očíslovaných blech na pravém/levém psu) nebyl u tohoto systému
+rozebírán. V případě tohoto systému šlo snadno zkonstruovat matice přechodů (či analogický graf) zachycující makrostavy $R_n$.
+
+
+## Mikrostavy modelu psů a blech
+
+Mikrostavem systému psů a blech je sadu pozic každé jednotlivé blechy, to lze
+snadno zapsat jako sadu  $S_n=(b_1,b_2, \ldots , b_N)_n$ binárních hodnot délky $N$, 
+
+kde 
+
+- $N$ je celkový počet blech
+
+- $n$ je po4et kroků
+
+- a $b_i$ (kde $i\in(1, \ldots , N)$)  nabývají hodnot 0/1. Hodnota $b_i=0$
+indikuje, že i-tá blecha je na pravém psu, hodnota $b_i=1$ znamená, že je na
+pravém psu.
+
+- $S_n$ je v podstatě zápisem seznamu poloh $N$ blech jako binárním číslem 
+
+Vztah mezi pozorovaným makrostavem $R_n$ a seznamem pozic blech $S_n$ je prostý
+$R_n$ se rovná počtu hodnot 1 v seznamu $S_n$.
+
+V kroku $n+1$ se seznam pozic blech $S_{n+1}$ muže lišit od $S_n$ pouze v jedné hodnotě $b_i$.
+Pokud byla vybrána i-tá blecha a ta tím pádem přeskočila a opačného psa pak $b_i$ se změnilo 
+
+- z 0 na 1  (přeskok z levého psa na pravého)
+- nebo z 1 na 0 (přeskok z pravého psa na levého )
+
+## Graf mikrostavů
+
+Pokud všechny možné seznamy pozic blech $S_{n}$ použijeme jako uzly grafu, pak pravidlo, že 
+$S_n$ a $S_{n+1}$ se mohou lišit od  pouze v jedné hodnotě $b_i$ definuje všechny možné hrany (přechody)
+mezi uzly. 
+
+Uzly zároveň mužeme označit hodnotou makrostavu $R$ (a barevně rozlišit). 
+
+Pro nejjednodušší model s pouze N=3 blechami pak tento graf vypadá  následovně:
+
+```{dot caption="2 blechy"}
+//| fig-width: 5
+//| fig-height: 5
+
+digraph blechy {
+    graph [layout=neato;nodesep=4.0]; 
+    rankdir = LR;
+    fontsize=7;
+    node [fontsize=6 width=0.3, height=0.3, fixedsize=true; shape=circle];
+    edge [fontsize=6;penwidth=0.4, arrowsize=0.4];
+    111[color=violet;label="111 \nR=3"];
+    110[color=green;label="110 \nR=2"];
+    101[color=green;label="101 \nR=2"];
+    011[color=green;label="011 \nR=2"];
+    100[color=blue;label="100 \nR=1"];
+    010[color=blue;label="010 \nR=1"];
+    001[color=blue;label="001 \nR=1"];
+    000[color=red;label="000 \nR=0"];
+
+
+    000->001 [dir=both;label="p=1/3"];
+    000->010 [dir=both];
+    000->100 [dir=both];
+    001->011 [dir=both];
+    001->101 [dir=both];
+    010->011 [dir=both];
+    010->110 [dir=both];
+    011->111 [dir=both];
+    101->111 [dir=both];
+    110->111 [dir=both];
+    100->110 [dir=both];
+    100->101 [dir=both];
+
+}
+```
+
+Graf pro N=3 si lze představit jako krychli a celá historie modelu je jen procházením uzlů tohoto grafů.  
+
+Hrany grafů jsou obousměrné a mají (na obě strany) konstantní pravděpodobnost přechodu rovnou:
+
+$$
+\begin{equation}
+p=\frac{1}{N}
+\end{equation}
+$$
+
+
+
+Matice přechodu pro mikrostavy lze proto generovat na základě pravidla, že možné hrany (přechody) mohou spojovat jen uzly lišící se pouze jedné hodnotě $b_i$.
+
+Matice přechodu pro mikrostavy lze převést na matici přechodu odpovídající makrostavům, prostou sumací řádek a sloupců, ktere mají stejnou hodnotu makrostavu R.
+
+Generování matic přechodu lze provést pomoci 
+programu [hypercube_transition_dataframes.jl](../../listings/hypercube_transition_dataframes.qmd).
+
+- Matice přechodu generované pro N=3:
+
+```{julia}
+#| echo: true
+#| output: asis
+#| code-fold: false
+
+include("hypercube_transition_dataframes.jl")
+
+
+# Example  for N = 3:
+N = 3
+df_full, df_reduced = hypercube_transition_dataframes(N)
+
+println("---  Matice přechodu Microstavy (N=$N) ---\n")
+# show(df_reduced, allcols=true)
+pretty_table(
+    df_full, backend=:markdown,
+    column_labels=names(df_full),
+    alignment=:c
+)
+
+println("--- Kondenzovaná  Matice přechodu  (N=$N) ---\n")
+pretty_table(
+    df_reduced, backend=:markdown,
+    column_labels=names(df_reduced),
+    alignment=:c
+)
+
+```
+
+## Grafy mikrostavů pro N>3
+
+Grafy pro více blech mohou být generovány pomoci
+programu [make_hypercube_dot.jl](../../listings/make_hypercube_dot.qmd).
+
+```{julia}
+#| echo: false
+#| output: false  #asis
+
+include("make_hypercube_dot.jl")
+make_hypercube_dot(4, filename="graph4.dot")
+make_hypercube_dot(5, filename="graph5.dot")
+make_hypercube_dot(6, filename="graph6.dot")
+```
+
+Grafy rychle ztrácejí přehlednost...
+
+### Graf pro N=4
+
+```{dot}
+//| file: graph4.dot
+//| fig-width: 7.5
+//| fig-height: 7.5
+```
+
+- Matice přechodu
+
+```{julia}
+#| echo: true
+#| output: asis
+#| code-fold: false
+# Example  for N = 4:
+N = 4
+df_full, df_reduced = hypercube_transition_dataframes(N)
+
+println("---  Matice přechodu Microstavy (N=$N) ---\n")
+# show(df_reduced, allcols=true)
+pretty_table(
+    df_full, backend=:markdown,
+    column_labels=names(df_full),
+    alignment=:c
+)
+
+println("--- Kondenzovaná  Matice přechodu  (N=$N) ---\n")
+pretty_table(
+    df_reduced, backend=:markdown,
+    column_labels=names(df_reduced),
+    alignment=:c
+)
+
+```
+
+
+### Graf pro N=5
+
+```{dot}
+//| file: graph5.dot
+//| fig-width: 7.5
+//| fig-height: 7.5
+```
+
+### Graf pro N=6
+
+```{dot}
+//| file: graph6.dot
+//| fig-width: 7.5
+//| fig-height: 7.5
+```
+
+

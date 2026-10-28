@@ -1,0 +1,14 @@
+---
+# exclude_from_post_listing: true
+---
+
+# make_hypercube_dot.jl
+
+```{.julia include="../posts/p1_galtonova_deska/make_hypercube_dot.jl"}
+#| echo: false
+#| output: false  #asis
+#| code-fold: false
+
+```
+
+Generováno pomocí AI Google  Gemini... 

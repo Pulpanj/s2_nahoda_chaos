@@ -1,0 +1,18 @@
+---
+# exclude_from_post_listing: true
+# format:
+#     html:
+#         highlight-style: ../resources/jptango.theme
+#         code-block-border-left: "#0b4edeff" 
+#         code-block-bg: "#fafaf1ff"
+---
+
+# LazyCombinatorics.jl
+
+```{.julia include="../posts/p2_boltzmann_game/LazyCombinatorics.jl"}
+#| echo: false
+#| output: false  #asis
+#| code-fold: false
+```
+
+Generováno pomocí  AI Microsoft  Copilot ... 

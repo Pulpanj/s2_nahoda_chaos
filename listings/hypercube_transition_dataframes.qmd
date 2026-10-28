@@ -1,0 +1,14 @@
+---
+# exclude_from_post_listing: true
+---
+
+# hypercube_transition_dataframes.jl
+
+```{.julia include="../posts/p1_galtonova_deska/hypercube_transition_dataframes.jl"}
+#| echo: false
+#| output: false  #asis
+#| code-fold: false
+
+```
+
+Generováno pomocí AI Google  Gemini... 

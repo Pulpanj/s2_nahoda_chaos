@@ -1,0 +1,17 @@
+format:
+  html:
+    # theme:
+      # - lux,cosmo
+      # - brand
+      # light: brand
+      # dark: slate
+    code-block-border-left: "#0b4edeff" 
+    code-block-bg: "#fafaf1ff"
+    # highlight-style: tango
+    highlight-style: ../resources/jptango.theme
+    code-line-numbers: true
+    code-overflow: wrap
+    code-annotations: hover
+    code-fold: true
+    cap-location: top
+    fig-cap-location: top
