@@ -13,13 +13,13 @@ function make_hypercube_dot(N::Int; filename="graph3.dot")
     hamming(a::AbstractString, b::AbstractString) =
         count(t -> t[1] != t[2], zip(a, b))
 
-    # r = -N + 2*(number of 1 bits)
-    nr(x) = -N + 2*count(==('1'), x)
+    # r = (number of 1 bits)
+    nr(x) = count(==('1'), x)
 
     # Color scale: blue → white → red
     function color_for(x)
         r = nr(x)
-        t = (r + N) / (2N)   # normalize to 0–1
+        t = r / (N)   # normalize to 0–1
 
         if t < 0.5
             u = t / 0.5

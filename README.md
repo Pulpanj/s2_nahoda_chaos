@@ -6,7 +6,7 @@ The resulting site is hosted at [http://www.pulpanj.me.cz/blogs/u3v/s2\_nahoda\_
 
 Lectures  are kindly run by prof. RNDr. Petr Chvosta, CSc. at Charles University, Faculty of Mathematics and Physics as part of the Third Age University (U3V) program. 
 
-It started in academic year 2025/2026, for that run I wrote similar [blog http://www.pulpanj.me.cz/blogs/u3v/s1\_nahoda\_chaos/](http://www.pulpanj.me.cz/blogs/u3v/s1_nahoda_chaos/) (Its git repository is [https://github.com/Pulpanj/s1_nahoda_chaos/](https://github.com/Pulpanj/s1_nahoda_chaos/) .
+It started in academic year 2025/2026, for that I had been writing  similar [blog http://www.pulpanj.me.cz/blogs/u3v/s1\_nahoda\_chaos/](http://www.pulpanj.me.cz/blogs/u3v/s1_nahoda_chaos/) (Its git repository is [https://github.com/Pulpanj/s1_nahoda_chaos/](https://github.com/Pulpanj/s1_nahoda_chaos/) .
 
 I just retired and so it is all about fun with learning of Julia programming language and trying to understand all these nice topics.
 

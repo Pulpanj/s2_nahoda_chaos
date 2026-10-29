@@ -165,8 +165,10 @@ programu [make_hypercube_dot.jl](../../listings/make_hypercube_dot.qmd).
 
 ```{julia}
 #| echo: false
-#| output: false  #asis
-
+#| output: true  #asis
+#| cache: false
+#| freeze: false
+#| 
 include("make_hypercube_dot.jl")
 make_hypercube_dot(4, filename="graph4.dot")
 make_hypercube_dot(5, filename="graph5.dot")

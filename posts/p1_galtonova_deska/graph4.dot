@@ -4,21 +4,21 @@ digraph G {
 
   edge [fontsize=6 penwidth=0.4 arrowsize=0.4];
 
-  "0000" [label="0000\nR=-4", fillcolor="#0000ff"]; 
-  "0001" [label="0001\nR=-2", fillcolor="#8080ff"]; 
-  "0010" [label="0010\nR=-2", fillcolor="#8080ff"]; 
-  "0011" [label="0011\nR=0", fillcolor="#ffffff"]; 
-  "0100" [label="0100\nR=-2", fillcolor="#8080ff"]; 
-  "0101" [label="0101\nR=0", fillcolor="#ffffff"]; 
-  "0110" [label="0110\nR=0", fillcolor="#ffffff"]; 
-  "0111" [label="0111\nR=2", fillcolor="#ff8080"]; 
-  "1000" [label="1000\nR=-2", fillcolor="#8080ff"]; 
-  "1001" [label="1001\nR=0", fillcolor="#ffffff"]; 
-  "1010" [label="1010\nR=0", fillcolor="#ffffff"]; 
-  "1011" [label="1011\nR=2", fillcolor="#ff8080"]; 
-  "1100" [label="1100\nR=0", fillcolor="#ffffff"]; 
-  "1101" [label="1101\nR=2", fillcolor="#ff8080"]; 
-  "1110" [label="1110\nR=2", fillcolor="#ff8080"]; 
+  "0000" [label="0000\nR=0", fillcolor="#0000ff"]; 
+  "0001" [label="0001\nR=1", fillcolor="#8080ff"]; 
+  "0010" [label="0010\nR=1", fillcolor="#8080ff"]; 
+  "0011" [label="0011\nR=2", fillcolor="#ffffff"]; 
+  "0100" [label="0100\nR=1", fillcolor="#8080ff"]; 
+  "0101" [label="0101\nR=2", fillcolor="#ffffff"]; 
+  "0110" [label="0110\nR=2", fillcolor="#ffffff"]; 
+  "0111" [label="0111\nR=3", fillcolor="#ff8080"]; 
+  "1000" [label="1000\nR=1", fillcolor="#8080ff"]; 
+  "1001" [label="1001\nR=2", fillcolor="#ffffff"]; 
+  "1010" [label="1010\nR=2", fillcolor="#ffffff"]; 
+  "1011" [label="1011\nR=3", fillcolor="#ff8080"]; 
+  "1100" [label="1100\nR=2", fillcolor="#ffffff"]; 
+  "1101" [label="1101\nR=3", fillcolor="#ff8080"]; 
+  "1110" [label="1110\nR=3", fillcolor="#ff8080"]; 
   "1111" [label="1111\nR=4", fillcolor="#ff0000"]; 
 
   "0000" -> "0001" [dir=both];
